@@ -2,7 +2,7 @@ import cv2
 import sys
 
 
-cascPath = "haarcascade_smile.xml"
+cascPath = "haarcascade_fullbody.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
 video_capture = cv2.VideoCapture(0)
