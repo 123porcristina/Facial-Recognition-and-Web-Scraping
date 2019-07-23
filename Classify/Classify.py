@@ -1,36 +1,55 @@
+import cv2
 import sys
-import dlib
-from skimage import io
+import logging as log
+import datetime as dt
+from time import sleep
 
-# Take the image file name from the command line
-file_name = "messi5.jpg"
+cascPath = "haarcascade_frontalface_default.xml"
+faceCascade = cv2.CascadeClassifier(cascPath)
+log.basicConfig(filename='webcam.log',level=log.INFO)
 
-# Create a HOG face detector using the built-in dlib class
-face_detector = dlib.get_frontal_face_detector()
+video_capture = cv2.VideoCapture(0)
+anterior = 0
 
-win = dlib.image_window()
+while True:
+    if not video_capture.isOpened():
+        print('Unable to load camera.')
+        sleep(5)
+        pass
 
-# Load the image into an array
-image = io.imread(file_name)
+    # Capture frame-by-frame
+    ret, frame = video_capture.read()
 
-# Run the HOG face detector on the image data.
-# The result will be the bounding boxes of the faces in our image.
-detected_faces = face_detector(image, 1)
+    #gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-print("I found {} faces in the file {}".format(len(detected_faces), file_name))
+    faces = faceCascade.detectMultiScale(
+        frame,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags = cv2.CASCADE_SCALE_IMAGE
+    )
 
-# Open a window on the desktop showing the image
-win.set_image(image)
+    # Draw a rectangle around the faces
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-# Loop through each face we found in the image
-for i, face_rect in enumerate(detected_faces):
-    
-    # Detected faces are returned as an object with the coordinates
-    # of the top, left, right and bottom edges
-    print("- Face #{} found at Left: {} Top: {} Right: {} Bottom: {}".format(i, face_rect.left(), face_rect.top(), face_rect.right(), face_rect.bottom()))
-    
-    # Draw a box around each face we found
-    win.add_overlay(face_rect)
+    if anterior != len(faces):
+        anterior = len(faces)
+        log.info("faces: "+str(len(faces))+" at "+str(dt.datetime.now()))
 
-# Wait until the user hits <enter> to close the window
-dlib.hit_enter_to_continue()
+
+    # Display the resulting frame
+    cv2.imshow('Video', frame)
+
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+    # Display the resulting frame
+    cv2.imshow('Video', frame)
+
+# When everything is done, release the capture
+video_capture.release()
+cv2.destroyAllWindows()
+
