@@ -2,7 +2,7 @@ import cv2
 import sys
 
 
-cascPath = "haarcascade_frontalface_default.xml"
+cascPath = "haarcascade_smile.xml"
 faceCascade = cv2.CascadeClassifier(cascPath)
 
 video_capture = cv2.VideoCapture(0)
@@ -24,8 +24,8 @@ while True:
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        #font = cv2.FONT_HERSHEY_SIMPLEX
-        #cv2.putText(frame, 'OpenCV', (10, 500), font, 4, (255, 255, 255), 2, cv2.LINE_AA)
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, 'Gregg', (x+w, y+h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
     # Display the resulting frame
     cv2.imshow('Video', frame)
 
