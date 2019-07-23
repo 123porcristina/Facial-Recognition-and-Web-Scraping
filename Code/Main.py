@@ -4,9 +4,9 @@ import cv2
 import sys
 
 # Get user supplied values
-imagePath = "abba.png"
+#imagePath = "abba.png"
 #imagePath = "messi5.jpg"
-#imagePath = "one.jpg"
+imagePath = "ten.jpg"
 cascPath = "haarcascade_frontalface_default.xml"
 
 # Create the haar cascade
