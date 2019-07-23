@@ -4,22 +4,20 @@ import cv2
 import sys
 
 # Get user supplied values
-#imagePath = "abba.png"
-#imagePath = "messi5.jpg"
-imagePath = "ten.jpg"
-cascPath = "haarcascade_frontalface_default.xml"
+imagePath = "ten.jpg" #imagePath = "abba.png" #imagePath = "messi5.jpg"
+cascPath = "haarcascade_frontalface_default.xml" #trained to detect faces
 
-# Create the haar cascade
+# Create the haar cascade (A classifier. in this case, it is trained to detect faces)
 faceCascade = cv2.CascadeClassifier(cascPath)
 
 # Read the image
 image = cv2.imread(imagePath,0)
-#gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 
 # Detect faces in the image
 faces = faceCascade.detectMultiScale(
-                                     image,
+                                     gray,
                                      scaleFactor=1.1,
                                      minNeighbors=5,
                                      minSize=(30, 30),
