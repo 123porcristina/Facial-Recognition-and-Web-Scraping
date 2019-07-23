@@ -5,8 +5,8 @@ import sys
 
 # Get user supplied values
 imagePath = "abba.png"
-#imagePath = "code/messi5.jpg"
-#imagePath = "code/one.jpg"
+#imagePath = "messi5.jpg"
+#imagePath = "one.jpg"
 cascPath = "Code/haarcascade_frontalface_default.xml"
 
 # Create the haar cascade
@@ -23,7 +23,7 @@ faces = faceCascade.detectMultiScale(
                                      scaleFactor=1.1,
                                      minNeighbors=5,
                                      minSize=(30, 30),
-                                     flags = cv2.CASCADE_SCALE_IMAGE
+                                     flags = cv2.cv.CV_HAAR_SCALE_IMAGE
                                      )
 
 print("Found {0} faces!".format(len(faces)))
