@@ -7,7 +7,7 @@ import sys
 imagePath = "abba.png"
 #imagePath = "code/messi5.jpg"
 #imagePath = "code/one.jpg"
-cascPath = "haarcascade_frontalface_default.xml"
+cascPath = "Code/haarcascade_frontalface_default.xml"
 
 # Create the haar cascade
 faceCascade = cv2.CascadeClassifier(cascPath)
