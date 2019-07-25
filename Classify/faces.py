@@ -33,7 +33,7 @@ while True:
 
         # capture faces and save for training
         cropped = frame[y:y+w, x:x+w]
-        saved = "faces/face" + str(i) + ".jpg"
+        saved = "images/face" + str(i) + ".jpg"
         print("saved")
         cv2.imwrite(saved, cropped)
         i=i+1
