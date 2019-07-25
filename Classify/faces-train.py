@@ -4,6 +4,8 @@ import numpy as np
 from PIL import Image
 import pickle
 
+
+
 cascPath = "haarcascade_frontalface_default.xml"
 
 
@@ -34,7 +36,7 @@ for root, dirs, files in os.walk(image_dir):
             # x_train.append(path)
             pil_image = Image.open(path).convert("L") #gray scale
             size = (550,550)
-            final_image=pil_image.resize(size,Image.ANTIALIAS)
+
             image_array = np.array(pil_image, "uint8") #convert the gray scale in an array
             # print(image_array)
             faces = faceCascade.detectMultiScale(image_array, scaleFactor=1.5, minNeighbors=5)

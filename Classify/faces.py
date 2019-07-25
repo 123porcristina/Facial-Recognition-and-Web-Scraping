@@ -3,11 +3,16 @@ import sys
 import pickle
 import numpy as np
 
-
+cascPatheye = "haarcascade_eye.xml"
+cascPathsmile = "haarcascade_smile.xml"
 cascPath = "haarcascade_frontalface_default.xml"
-cascPath2 = "haarcascade_fullbody.xml"
+cascPathbody = "haarcascade_fullbody.xml"
+
 faceCascade = cv2.CascadeClassifier(cascPath)
-bodyCascade = cv2.CascadeClassifier(cascPath2)
+bodyCascade = cv2.CascadeClassifier(cascPathbody)
+smileCascade = cv2.CascadeClassifier(cascPathsmile)
+eyeCascade = cv2.CascadeClassifier(cascPatheye)
+
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read("trainer.yml")
 
@@ -54,7 +59,7 @@ while True:
 
         # recognize? deep learned model predict keras tensorflow pytorch scikit learn
         id_, conf = recognizer.predict(cropped)
-        if conf >= 15 and conf <= 95:
+        if conf >= 1 and conf <= 45:
             # print(5: #id_)
             # print(labels[id_])
             font = cv2.FONT_HERSHEY_SIMPLEX
@@ -64,8 +69,50 @@ while True:
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.putText(frame, name, (x, y), font, 1, color, stroke, cv2.LINE_AA)
 
+    ####### EYE
+    eyes = eyeCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(10, 10),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
 
-    # Display the resulting frame
+    for (x, y, w, h) in eyes:
+
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        #font = cv2.FONT_HERSHEY_SIMPLEX
+        #cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+
+
+    ####### SMILE
+    eyes = eyeCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.1,
+        minNeighbors=5,
+        minSize=(10, 10),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+
+    for (x, y, w, h) in eyes:
+
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        #font = cv2.FONT_HERSHEY_SIMPLEX
+        #cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ########################## # Display the resulting frame####################################################
     #cv2.imshow('Video', cropped) # this is what the gradient vector image looks like
     cv2.imshow('Video', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
