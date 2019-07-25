@@ -36,7 +36,7 @@ while True:
         saved = "faces/face" + str(i) + ".jpg"
         cv2.imwrite(saved, cropped)
         i=i+1
-
+'''
         # recognize? deep learned model predict keras tensorflow pytorch scikit learn
         id_, conf = recognizer.predict(cropped)
         if conf >= 4 and conf <= 85:
@@ -47,7 +47,7 @@ while True:
             color = (255, 255, 255)
             stroke = 2
             cv2.putText(frame, name, (x, y), font, 1, color, stroke, cv2.LINE_AA)
-
+'''
 
     #######BODY
     body = bodyCascade.detectMultiScale(
