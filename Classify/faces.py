@@ -50,7 +50,7 @@ while True:
 
         # recognize? deep learned model predict keras tensorflow pytorch scikit learn
         id_, conf = recognizer.predict(cropped)
-        if conf >= 4 and conf <= 85:
+        if conf >= 45 and conf <= 85:
             # print(5: #id_)
             # print(labels[id_])
             font = cv2.FONT_HERSHEY_SIMPLEX
