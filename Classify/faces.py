@@ -83,7 +83,7 @@ while True:
             ####if username is recognized  from the camera, save the url in a text file to be pulled out later by a scraper
             open('users.txt', 'w').close()#clear it first
             file1 = open("users.txt", "a")  # append mode
-            file1.write("https://www.instagram.com/" + name +"/\n")
+            file1.write("https://www.instagram.com/" + name +"/")
             file1.close()
 
 
