@@ -10,18 +10,19 @@ import urllib.error
 from bs4 import BeautifulSoup
 import ssl
 import json
+import time
 
 
-
-cascPatheye = "haarcascade_eye.xml"
-cascPathsmile = "haarcascade_smile.xml"
+cascPathrightpalm = "haarcascade_rightpalm.xml"
+cascPathrightfist = "haarcascade_rightfist.xml"
 cascPath = "haarcascade_frontalface_default.xml"
 cascPathbody = "haarcascade_fullbody.xml"
 
 faceCascade = cv2.CascadeClassifier(cascPath)
 bodyCascade = cv2.CascadeClassifier(cascPathbody)
-smileCascade = cv2.CascadeClassifier(cascPathsmile)
-eyeCascade = cv2.CascadeClassifier(cascPatheye)
+rightpalmCascade = cv2.CascadeClassifier(cascPathrightpalm)
+rightfistCascade = cv2.CascadeClassifier(cascPathrightfist)
+
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read("trainer.yml")
@@ -94,8 +95,10 @@ while True:
                 def getinfo(self, url):
                     html = urllib.request.urlopen(url, context=self.ctx).read()
                     soup = BeautifulSoup(html, 'html.parser')
-                    data = soup.find_all('meta', attrs={'property': 'og:description'
-                                                        })
+                    data = soup.find_all('meta', attrs={'property': 'og:description'})
+
+
+
                     text = data[0].get('content').split()
                     user = '%s %s %s' % (text[-3], text[-2], text[-1])
                     followers = text[0]
@@ -122,61 +125,44 @@ while True:
                         self.content = f.readlines()
                     self.content = [x.strip() for x in self.content]
                     for url in self.content:
+                        print("before 125")
                         self.getinfo(url)
 
 
             if __name__ == '__main__':
+                print("before 130")
                 obj = Insta_Info_Scraper()
+                print("before 132")
                 obj.main()
 
 
 
+    ####### HAND
 
-
-
-
-
-
-
-
-
-
-
-
-
-    ####### EYE
-    '''
-    eyes = eyeCascade.detectMultiScale(
+    rightpalms = rightpalmCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(10, 10),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
-
-    for (x, y, w, h) in eyes:
-
+    for (x, y, w, h) in rightpalms:
         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-        #font = cv2.FONT_HERSHEY_SIMPLEX
-        #cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
-    '''
-
-    ####### SMILE######### this haar sucks
-    '''
-    smile = smileCascade.detectMultiScale(
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, 'rightpalm', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+    rightfists = rightfistCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(10, 10),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
-
-    for (x, y, w, h) in smile:
-
+    for (x, y, w, h) in rightfists:
         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-        #font = cv2.FONT_HERSHEY_SIMPLEX
-        #cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
-    '''
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(frame, 'rightfist', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+
+
 
 
    ## Display the resulting frame###
@@ -188,9 +174,5 @@ while True:
 # When everything is done, release the capture
 video_capture.release()
 cv2.destroyAllWindows()
-
-
-
-
 
 
