@@ -43,9 +43,9 @@ while True:
 
         # capture faces and save for training
         cropped = gray[y:y+w, x:x+w]
-        saved = "images/face" + str(i) + ".jpg"
-        print("saved")
-        cv2.imwrite(saved, cropped)
+        # saved = "images/face" + str(i) + ".jpg"
+        # print("saved")
+        # cv2.imwrite(saved, cropped)
         i=i+1
 
         # recognize? deep learned model predict keras tensorflow pytorch scikit learn
