@@ -23,8 +23,9 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
-    # Draw a rectangle around the faces
+    # loop on every faces per slice of image on the cam
     for (x, y, w, h) in faces:
+        # Draw a rectangle around the face
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
         font = cv2.FONT_HERSHEY_SIMPLEX
         cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
@@ -34,6 +35,18 @@ while True:
         saved = "faces/face" + str(i) + ".jpg"
         cv2.imwrite(saved, cropped)
         i=i+1
+
+        # recognize? deep learned model predict keras tensorflow pytorch scikit learn
+        id_, conf = recognizer.predict(cropped)
+        if conf >= 4 and conf <= 85:
+            # print(5: #id_)
+            # print(labels[id_])
+            font = cv2.FONT_HERSHEY_SIMPLEX
+            name = labels[id_]
+            color = (255, 255, 255)
+            stroke = 2
+            cv2.putText(frame, name, (x, y), font, 1, color, stroke, cv2.LINE_AA)
+
 
     #######BODY
     body = bodyCascade.detectMultiScale(
