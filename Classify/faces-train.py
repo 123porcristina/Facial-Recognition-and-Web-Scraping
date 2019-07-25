@@ -15,27 +15,28 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 
 current_id = 0 #to create labels
 label_ids = {} #to create labels
-
 y_labels=[] # numbers related to the labels
 x_train = [] #contains pixel values
+
 for root, dirs, files in os.walk(image_dir):
     for file in files:
         if file.endswith("png") or file.endswith("jpg"):
             path = os.path.join(root, file)
             label = os.path.basename(os.path.dirname(path)).replace(" ","-").lower()
-            print(path)
+            #print(path)
             if not label in label_ids: #create labels
                 label_ids[label] = current_id
                 current_id +=1
             id_= label_ids[label]
 
+            #print(label_ids)
             # y_labels.append(label) #number for the label
             # x_train.append(path)
             pil_image = Image.open(path).convert("L") #gray scale
             size = (550,550)
             final_image=pil_image.resize(size,Image.ANTIALIAS)
             image_array = np.array(pil_image, "uint8") #convert the gray scale in an array
-            print(image_array)
+            #print(image_array)
             faces = faceCascade.detectMultiScale(image_array, scaleFactor=1.5, minNeighbors=5)
 
             for (x,y,w,h) in faces:
@@ -43,11 +44,11 @@ for root, dirs, files in os.walk(image_dir):
                 x_train.append(roi)
                 y_labels.append(id_)
 
-# print(y_labels)
-# print(x_train)
+#print(y_labels)
+#print(x_train)
 
 with open("labels.pickle","wb") as f:
     pickle.dump(label_ids,f) #save the label ids in a file
 
 recognizer.train(x_train, np.array(y_labels))
-recognizer.save("recognizers/trainer.yml")
+recognizer.save("trainer.yml")
