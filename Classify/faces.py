@@ -1,6 +1,7 @@
 import cv2
 import sys
 import pickle
+import numpy as np
 
 
 cascPath = "haarcascade_frontalface_default.xml"
@@ -27,7 +28,7 @@ while True:
 
     ####### FACE
     faces = faceCascade.detectMultiScale(
-        frame,
+        gray,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(30, 30),
@@ -41,43 +42,31 @@ while True:
         #font = cv2.FONT_HERSHEY_SIMPLEX
         #cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
 
+        cropped = gray[y:y + w, x:x + w]
+        gx, gy = np.gradient(cropped)  # take the gradiant to vectorize the image into two values
+        cropped = np.sqrt(np.square(gx) + np.square(gy))  # get magnitude to normalize it
+
         # capture faces and save for training
-        cropped = gray[y:y+w, x:x+w]
-        # saved = "images/face" + str(i) + ".jpg"
+        #saved = "images/face" + str(i) + ".jpg"
         # print("saved")
-        # cv2.imwrite(saved, cropped)
+        #cv2.imwrite(saved, cropped)
         i=i+1
 
         # recognize? deep learned model predict keras tensorflow pytorch scikit learn
         id_, conf = recognizer.predict(cropped)
-        if conf >= 45 and conf <= 85:
+        if conf >= 5 and conf <= 195:
             # print(5: #id_)
             # print(labels[id_])
             font = cv2.FONT_HERSHEY_SIMPLEX
-            name = labels[id_]
+            name = labels[id_] + str(round(conf))+ "%"
             color = (255, 255, 255)
             stroke = 2
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.putText(frame, name, (x, y), font, 1, color, stroke, cv2.LINE_AA)
 
 
-#######BODY
-    body = bodyCascade.detectMultiScale(
-        frame,
-        scaleFactor=1.1,
-        minNeighbors=5,
-        minSize=(30, 30),
-        flags=cv2.CASCADE_SCALE_IMAGE
-    )
-
-    # Draw a rectangle around the body
-    for (x, y, w, h) in body:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(frame, 'BODY', (x+w, y+h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
-
-
     # Display the resulting frame
+    #cv2.imshow('Video', cropped) # this is what the gradient vector image looks like
     cv2.imshow('Video', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

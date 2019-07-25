@@ -41,6 +41,8 @@ for root, dirs, files in os.walk(image_dir):
 
             for (x,y,w,h) in faces:
                 roi = image_array[y:y+h, x:x+w]
+                gx, gy = np.gradient(roi) #take the gradiant to vectorize the image into two values
+                roi = np.sqrt(np.square(gx) + np.square(gy)) # get magnitude to normalize it
                 x_train.append(roi)
                 y_labels.append(id_)
 
