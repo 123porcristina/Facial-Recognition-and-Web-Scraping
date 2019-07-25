@@ -1,5 +1,6 @@
 import cv2
 import sys
+import pickle
 
 
 cascPath = "haarcascade_frontalface_default.xml"
