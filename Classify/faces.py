@@ -31,7 +31,7 @@ while True:
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
-        minSize=(30, 30),
+        minSize=(100, 100),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
@@ -54,7 +54,7 @@ while True:
 
         # recognize? deep learned model predict keras tensorflow pytorch scikit learn
         id_, conf = recognizer.predict(cropped)
-        if conf >= 5 and conf <= 195:
+        if conf >= 15 and conf <= 95:
             # print(5: #id_)
             # print(labels[id_])
             font = cv2.FONT_HERSHEY_SIMPLEX
