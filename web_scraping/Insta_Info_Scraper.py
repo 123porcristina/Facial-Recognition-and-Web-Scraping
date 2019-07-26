@@ -8,30 +8,35 @@ import urllib.error
 from bs4 import BeautifulSoup
 import ssl
 import json
+import cv2
 
-
+#######SCRAPER#################
+#scraper pulls data and shows the details on the screen
 class Insta_Info_Scraper:
 
-    def getinfo(self, url):
-
+    def getinfo(self, url, frame, x,h,y,font,size,color,stroke,conf,w):
         html = urllib.request.urlopen(url, context=self.ctx).read()
-        print(url)
         soup = BeautifulSoup(html, 'html.parser')
         data = soup.find_all('meta', attrs={'property': 'og:description'
-                             })
+                                            })
         text = data[0].get('content').split()
-        user = '%s %s' % (text[-3], text[-2])
+        user = '%s %s %s' % (text[-3], text[-2], text[-1])
         followers = text[0]
         following = text[2]
         posts = text[4]
-        print ('User:', user)
-        print ('Followers:', followers)
-        print ('Following:', following)
-        print ('Posts:', posts)
-        print ('---------------------------')
+        print('User:', user)
+        print('Followers:', followers)
+        print('Following:', following)
+        print('Posts:', posts)
+        print('---------------------------')
+        cv2.putText(frame, 'User:' + user, (x, y+h+15), font, size, color, stroke, cv2.LINE_AA)
+        cv2.putText(frame, 'Followers:'+ followers, (x, y+h+25), font, size, color, stroke, cv2.LINE_AA)
+        cv2.putText(frame, 'Following:'+ following, (x, y+h+35), font, size, color, stroke, cv2.LINE_AA)
+        cv2.putText(frame, 'Posts:'+ posts, (x, y+h+45), font, size, color, stroke, cv2.LINE_AA)
+        cv2.putText(frame, "Confidence" + str(round(conf)) + "%", (x, y+h+55), font, size, color, stroke, cv2.LINE_AA)
+        cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
 
-
-    def main(self):
+    def main(self, frame, x,h,y,font,size,color,stroke,conf,w):
         self.ctx = ssl.create_default_context()
         self.ctx.check_hostname = False
         self.ctx.verify_mode = ssl.CERT_NONE
@@ -40,10 +45,49 @@ class Insta_Info_Scraper:
             self.content = f.readlines()
         self.content = [x.strip() for x in self.content]
         for url in self.content:
-            self.getinfo(url)
-            print(url)
+            self.getinfo(url, frame, x,h,y,font,size,color,stroke,conf,w)
+
 
 if __name__ == '__main__':
     obj = Insta_Info_Scraper()
     obj.main()
+
+# class Insta_Info_Scraper:
+#
+#     def getinfo(self, url):
+#
+#         html = urllib.request.urlopen(url, context=self.ctx).read()
+#         print(url)
+#         soup = BeautifulSoup(html, 'html.parser')
+#         data = soup.find_all('meta', attrs={'property': 'og:description'
+#                              })
+#         text = data[0].get('content').split()
+#         user = '%s %s' % (text[-3], text[-2])
+#         followers = text[0]
+#         following = text[2]
+#         posts = text[4]
+#         print ('User:', user)
+#         print ('Followers:', followers)
+#         print ('Following:', following)
+#         print ('Posts:', posts)
+#         print ('---------------------------')
+#
+#
+#     def main(self):
+#         self.ctx = ssl.create_default_context()
+#         self.ctx.check_hostname = False
+#         self.ctx.verify_mode = ssl.CERT_NONE
+#
+#         with open('users.txt') as f:
+#             self.content = f.readlines()
+#         self.content = [x.strip() for x in self.content]
+#         for url in self.content:
+#             self.getinfo(url)
+#             print(url)
+#
+# if __name__ == '__main__':
+#     obj = Insta_Info_Scraper()
+#     obj.main()
+
+
 

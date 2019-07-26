@@ -10,19 +10,20 @@ import urllib.error
 from bs4 import BeautifulSoup
 import ssl
 import json
-import time
 
+from web_scraping import Insta_Info_Scraper as scraper
 
-cascPathrightpalm = "haarcascade_rightpalm.xml"
-cascPathrightfist = "haarcascade_rightfist.xml"
+obj = scraper.Insta_Info_Scraper()
+
+cascPatheye = "haarcascade_eye.xml"
+cascPathsmile = "haarcascade_smile.xml"
 cascPath = "haarcascade_frontalface_default.xml"
 cascPathbody = "haarcascade_fullbody.xml"
 
 faceCascade = cv2.CascadeClassifier(cascPath)
 bodyCascade = cv2.CascadeClassifier(cascPathbody)
-rightpalmCascade = cv2.CascadeClassifier(cascPathrightpalm)
-rightfistCascade = cv2.CascadeClassifier(cascPathrightfist)
-
+smileCascade = cv2.CascadeClassifier(cascPathsmile)
+eyeCascade = cv2.CascadeClassifier(cascPatheye)
 
 recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read("trainer.yml")
@@ -31,8 +32,6 @@ labels = {"person_name": 1}
 with open("labels.pickle", 'rb') as f:
 	og_labels = pickle.load(f)
 	labels = {v:k for k,v in og_labels.items()}
-
-
 
 
 video_capture = cv2.VideoCapture(0)
@@ -78,91 +77,94 @@ while True:
             color = (255, 255, 255)
             stroke = 1
             size = 0.4
-
-
+            print(name)
+            print(id_)
 
             ####if username is recognized  from the camera, save the url in a text file to be pulled out later by a scraper
             open('users.txt', 'w').close()#clear it first
             file1 = open("users.txt", "a")  # append mode
             file1.write("https://www.instagram.com/" + name +"/")
             file1.close()
+            obj.main(frame, x, h, y, font, size, color, stroke, conf, w)
 
 
             ########SCRAPER#################
             ##scraper pulls data and shows the details on the screen
-            class Insta_Info_Scraper:
-
-                def getinfo(self, url):
-                    html = urllib.request.urlopen(url, context=self.ctx).read()
-                    soup = BeautifulSoup(html, 'html.parser')
-                    data = soup.find_all('meta', attrs={'property': 'og:description'})
-
-
-
-                    text = data[0].get('content').split()
-                    user = '%s %s %s' % (text[-3], text[-2], text[-1])
-                    followers = text[0]
-                    following = text[2]
-                    posts = text[4]
-                    print('User:', user)
-                    print('Followers:', followers)
-                    print('Following:', following)
-                    print('Posts:', posts)
-                    print('---------------------------')
-                    cv2.putText(frame, 'User:' + user, (x, y+h+15), font, size, color, stroke, cv2.LINE_AA)
-                    cv2.putText(frame, 'Followers:'+ followers, (x, y+h+25), font, size, color, stroke, cv2.LINE_AA)
-                    cv2.putText(frame, 'Following:'+ following, (x, y+h+35), font, size, color, stroke, cv2.LINE_AA)
-                    cv2.putText(frame, 'Posts:'+ posts, (x, y+h+45), font, size, color, stroke, cv2.LINE_AA)
-                    cv2.putText(frame, "Confidence" + str(round(conf)) + "%", (x, y+h+55), font, size, color, stroke, cv2.LINE_AA)
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-
-                def main(self):
-                    self.ctx = ssl.create_default_context()
-                    self.ctx.check_hostname = False
-                    self.ctx.verify_mode = ssl.CERT_NONE
-
-                    with open('users.txt') as f:
-                        self.content = f.readlines()
-                    self.content = [x.strip() for x in self.content]
-                    for url in self.content:
-                        print("before 125")
-                        self.getinfo(url)
-
-
-            if __name__ == '__main__':
-                print("before 130")
-                obj = Insta_Info_Scraper()
-                print("before 132")
-                obj.main()
+            # class Insta_Info_Scraper:
+            #
+            #     def getinfo(self, url):
+            #         html = urllib.request.urlopen(url, context=self.ctx).read()
+            #         soup = BeautifulSoup(html, 'html.parser')
+            #         data = soup.find_all('meta', attrs={'property': 'og:description'
+            #                                             })
+            #         text = data[0].get('content').split()
+            #         user = '%s %s %s' % (text[-3], text[-2], text[-1])
+            #         followers = text[0]
+            #         following = text[2]
+            #         posts = text[4]
+            #         print('User:', user)
+            #         print('Followers:', followers)
+            #         print('Following:', following)
+            #         print('Posts:', posts)
+            #         print('---------------------------')
+            #         cv2.putText(frame, 'User:' + user, (x, y+h+15), font, size, color, stroke, cv2.LINE_AA)
+            #         cv2.putText(frame, 'Followers:'+ followers, (x, y+h+25), font, size, color, stroke, cv2.LINE_AA)
+            #         cv2.putText(frame, 'Following:'+ following, (x, y+h+35), font, size, color, stroke, cv2.LINE_AA)
+            #         cv2.putText(frame, 'Posts:'+ posts, (x, y+h+45), font, size, color, stroke, cv2.LINE_AA)
+            #         cv2.putText(frame, "Confidence" + str(round(conf)) + "%", (x, y+h+55), font, size, color, stroke, cv2.LINE_AA)
+            #         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
+            #
+            #     def main(self):
+            #         self.ctx = ssl.create_default_context()
+            #         self.ctx.check_hostname = False
+            #         self.ctx.verify_mode = ssl.CERT_NONE
+            #
+            #         with open('users.txt') as f:
+            #             self.content = f.readlines()
+            #         self.content = [x.strip() for x in self.content]
+            #         for url in self.content:
+            #             self.getinfo(url)
+            #
+            #
+            # if __name__ == '__main__':
+            #     obj = Insta_Info_Scraper()
+            #     obj.main()
 
 
 
-    ####### HAND
-
-    rightpalms = rightpalmCascade.detectMultiScale(
+    ####### EYE
+    '''
+    eyes = eyeCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(10, 10),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
-    for (x, y, w, h) in rightpalms:
+
+    for (x, y, w, h) in eyes:
+
         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(frame, 'rightpalm', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
-    rightfists = rightfistCascade.detectMultiScale(
+        #font = cv2.FONT_HERSHEY_SIMPLEX
+        #cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+    '''
+
+    ####### SMILE######### this haar sucks
+    '''
+    smile = smileCascade.detectMultiScale(
         gray,
         scaleFactor=1.1,
         minNeighbors=5,
         minSize=(10, 10),
         flags=cv2.CASCADE_SCALE_IMAGE
     )
-    for (x, y, w, h) in rightfists:
+
+    for (x, y, w, h) in smile:
+
         cv2.rectangle(frame, (x, y), (x + w, y + h), color, 2)
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        cv2.putText(frame, 'rightfist', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
-
-
+        #font = cv2.FONT_HERSHEY_SIMPLEX
+        #cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
+    '''
 
 
    ## Display the resulting frame###
@@ -174,5 +176,9 @@ while True:
 # When everything is done, release the capture
 video_capture.release()
 cv2.destroyAllWindows()
+
+
+
+
 
 
