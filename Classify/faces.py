@@ -87,7 +87,7 @@ while True:
             file1.close()
             obj.main(frame, x, h, y, font, size, color, stroke, conf, w)
 
-
+##DO NOT UNCOMMENT LINE 88 IS CALLING THE SAME CODE WHICH IS IN THE OTHER FILE
             ########SCRAPER#################
             ##scraper pulls data and shows the details on the screen
             # class Insta_Info_Scraper:
