@@ -74,7 +74,7 @@ class Insta_Info_Scraper:
         cv2.putText(frame, 'Posts:' + dict_text['Posts'], (x, y + h + 45), self.font, self.size, self.color, self.stroke, cv2.LINE_AA)
         cv2.putText(frame, "Confidence" + str(round(conf)) + "%", (x, y + h + 55), self.font, self.size, self.color, self.stroke,
                     cv2.LINE_AA)
-        cv2.rectangle(frame, (x, y), (x + w, y + h), self.color, 2)
+        #cv2.rectangle(frame, (x, y), (x + w, y + h), self.color, 2)
 
 
     def main(self, frame, x,h,y,conf,w,name):
