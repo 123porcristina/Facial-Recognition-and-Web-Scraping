@@ -13,7 +13,12 @@ import json
 
 from web_scraping import Insta_Info_Scraper as scraper
 
-obj = scraper.Insta_Info_Scraper()
+font = cv2.FONT_HERSHEY_SIMPLEX
+color = (255, 255, 255)
+stroke = 1
+size = 0.4
+
+obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 
 cascPatheye = "haarcascade_eye.xml"
 cascPathsmile = "haarcascade_smile.xml"
@@ -72,11 +77,11 @@ while True:
         if conf >= 1 and conf <= 45:
             # print(5: #id_)
             # print(labels[id_])
-            font = cv2.FONT_HERSHEY_SIMPLEX
+            # font = cv2.FONT_HERSHEY_SIMPLEX
             name = labels[id_]
-            color = (255, 255, 255)
-            stroke = 1
-            size = 0.4
+            # color = (255, 255, 255)
+            # stroke = 1
+            # size = 0.4
             print(name)
             print(id_)
 
@@ -85,7 +90,7 @@ while True:
             file1 = open("users.txt", "a")  # append mode
             file1.write("https://www.instagram.com/" + name +"/")
             file1.close()
-            obj.main(frame, x, h, y, font, size, color, stroke, conf, w)
+            obj.main(frame, x, h, y, conf, w, name)
 
 ##DO NOT UNCOMMENT LINE 88 IS CALLING THE SAME CODE WHICH IS IN THE OTHER FILE
             ########SCRAPER#################
