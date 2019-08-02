@@ -61,24 +61,19 @@ class Insta_Info_Scraper:
         print('---------------------------')
 
     # Set info about the user on the screen according to the face on it
-    def setTextScreen(self, frame, x, h, y, conf, w, name):
+    def setTextScreen(self, frame, x, h, y, w, name):
         # retrieves info from the dictionary according to the user
         dict_text = self.getinfo_dict(name)
+        position = x - 15 if x - 15 > 15 else x + 15
+        cv2.rectangle(frame, (h, x), (y, w),self.color, 2)
 
-        cv2.putText(frame, 'User:' + dict_text['User'], (x, y + h + 15), self.font, self.size, self.color, self.stroke,
-                    cv2.LINE_AA)
-        cv2.putText(frame, 'Followers:' + dict_text['Followers'], (x, y + h + 25), self.font, self.size, self.color,
-                    self.stroke, cv2.LINE_AA)
-        cv2.putText(frame, 'Following:' + dict_text['Following'], (x, y + h + 35), self.font, self.size, self.color,
-                    self.stroke, cv2.LINE_AA)
-        cv2.putText(frame, 'Posts:' + dict_text['Posts'], (x, y + h + 45), self.font, self.size, self.color,
-                    self.stroke, cv2.LINE_AA)
-        cv2.putText(frame, "Confidence" + str(round(conf)) + "%", (x, y + h + 55), self.font, self.size, self.color,
-                    self.stroke,
-                    cv2.LINE_AA)
-        # cv2.rectangle(frame, (x, y), (x + w, y + h), self.color, 2)
-
-    def main(self, frame, x, h, y, conf, w, name):
+        #cv2.putText(frame, name, (h, position), cv2.FONT_HERSHEY_SIMPLEX,0.75,self.color, 2)
+        cv2.putText(frame, 'User:' + dict_text['User'], (h, position-45), self.font, self.size, self.color, self.stroke)
+        cv2.putText(frame, 'Followers:' + dict_text['Followers'], (h, position-30), self.font, self.size, self.color, self.stroke)
+        cv2.putText(frame, 'Following:' + dict_text['Following'], (h, position-15), self.font, self.size, self.color, self.stroke)
+        cv2.putText(frame, 'Posts:' + dict_text['Posts'], (h, position), self.font, self.size, self.color, self.stroke)
+        
+    def main(self, frame, x, h, y, w, name):
         # it verifies if the info to get is new
         val = self.check_info(name)
 
@@ -92,9 +87,9 @@ class Insta_Info_Scraper:
             self.content = [x.strip() for x in self.content]
             for url in self.content:
                 self.getinfo(url, name)
-                self.setTextScreen(frame, x, h, y, conf, w, name)
+                self.setTextScreen(frame, x, h, y, w, name)
         else: # when the face is not new just get the info from the dictionary
-            self.setTextScreen(frame, x, h, y, conf, w, name)
+            self.setTextScreen(frame, x, h, y, w, name)
 
 
 if __name__ == '__main__':

@@ -12,6 +12,11 @@ import time
 import cv2
 import Insta_Info_Scraper as scraper
 
+
+
+
+
+
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-e", "--encodings", required=False,
@@ -28,7 +33,16 @@ args = vars(ap.parse_args())
 print("[INFO] loading encodings...")
 data = pickle.loads(open("encodings.pickle", "rb").read())
 
-obj = scraper.Insta_Info_Scraper(cv2.FONT_HERSHEY_SIMPLEX, (255, 255, 255), 1, 0.4)
+
+
+# scraper
+font = cv2.FONT_HERSHEY_SIMPLEX
+color = (255, 255, 255)
+stroke = 1
+size = 0.5
+obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
+
+
 
 # initialize the video stream and pointer to output video file, then
 # allow the camera sensor to warm up
@@ -95,17 +109,16 @@ while True:
 		right = int(right * r)
 		bottom = int(bottom * r)
 		left = int(left * r)
-
-		# draw the predicted face name on the image
-		cv2.rectangle(frame, (left, top), (right, bottom),
-			(0, 255, 0), 2)
-		y = top - 15 if top - 15 > 15 else top + 15
-		cv2.putText(frame, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
-			0.75, (0, 255, 0), 2)
-
-
-
-
+		
+		# draw the predicted face name and instagram status on the image
+                # if username is recognized  from the camera, save the url in a text file
+                # to be pulled out later by a scraper
+		open('users.txt', 'w').close() #clear5 it first
+		file1 = open("users.txt", "a")  # append mode
+		file1.write("https://www.instagram.com/" + name + "/")
+		file1.close()
+		obj.main(frame, top, left, right, bottom, name)
+		
 
 	# if the video writer is None *AND* we are supposed to write
 	# the output video to disk initialize the writer
