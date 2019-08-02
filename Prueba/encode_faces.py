@@ -11,9 +11,9 @@ import os
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--dataset", required=True,
+ap.add_argument("-i", "--dataset", required=False,
 	help="path to input directory of faces + images")
-ap.add_argument("-e", "--encodings", required=True,
+ap.add_argument("-e", "--encodings", required=False,
 	help="path to serialized db of facial encodings")
 ap.add_argument("-d", "--detection-method", type=str, default="hog",
 	help="face detection model to use: either `hog` or `cnn`")
@@ -21,7 +21,7 @@ args = vars(ap.parse_args())
 
 # grab the paths to the input images in our dataset
 print("[INFO] quantifying faces...")
-imagePaths = list(paths.list_images(args["dataset"]))
+imagePaths = list(paths.list_images("dataset"))
 
 # initialize the list of known encodings and known names
 knownEncodings = []
@@ -57,6 +57,6 @@ for (i, imagePath) in enumerate(imagePaths):
 # dump the facial encodings + names to disk
 print("[INFO] serializing encodings...")
 data = {"encodings": knownEncodings, "names": knownNames}
-f = open(args["encodings"], "wb")
+f = open("encodings.pickle", "wb")
 f.write(pickle.dumps(data))
 f.close()

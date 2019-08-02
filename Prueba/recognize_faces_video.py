@@ -10,11 +10,11 @@ import imutils
 import pickle
 import time
 import cv2
-from web_scraping import Insta_Info_Scraper as scraper
+import Insta_Info_Scraper as scraper
 
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-e", "--encodings", required=True,
+ap.add_argument("-e", "--encodings", required=False,
 	help="path to serialized db of facial encodings")
 ap.add_argument("-o", "--output", type=str,
 	help="path to output video")
@@ -26,7 +26,7 @@ args = vars(ap.parse_args())
 
 # load the known faces and embeddings
 print("[INFO] loading encodings...")
-data = pickle.loads(open(args["encodings"], "rb").read())
+data = pickle.loads(open("encodings.pickle", "rb").read())
 
 obj = scraper.Insta_Info_Scraper(cv2.FONT_HERSHEY_SIMPLEX, (255, 255, 255), 1, 0.4)
 
