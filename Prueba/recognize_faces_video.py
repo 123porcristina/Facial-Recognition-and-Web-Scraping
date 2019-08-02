@@ -10,10 +10,8 @@ import imutils
 import pickle
 import time
 import cv2
-import Insta_Info_Scraper as scraper
-
-
-
+# from web_scraping import Insta_Info_Scraper as scraper
+from Prueba import Insta_Info_Scraper as scraper
 
 
 
@@ -32,7 +30,6 @@ args = vars(ap.parse_args())
 # load the known faces and embeddings
 print("[INFO] loading encodings...")
 data = pickle.loads(open("encodings.pickle", "rb").read())
-
 
 
 # scraper
@@ -111,8 +108,8 @@ while True:
 		left = int(left * r)
 		
 		# draw the predicted face name and instagram status on the image
-                # if username is recognized  from the camera, save the url in a text file
-                # to be pulled out later by a scraper
+        # if username is recognized  from the camera, save the url in a text file
+        # to be pulled out later by a scraper
 		open('users.txt', 'w').close() #clear5 it first
 		file1 = open("users.txt", "a")  # append mode
 		file1.write("https://www.instagram.com/" + name + "/")
