@@ -14,7 +14,6 @@ import cv2
 from Prueba import Insta_Info_Scraper as scraper
 
 
-
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-e", "--encodings", required=False,
