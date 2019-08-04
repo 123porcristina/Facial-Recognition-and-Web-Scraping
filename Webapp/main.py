@@ -6,7 +6,7 @@ import imutils
 import pickle
 import time
 import cv2
-import Insta_Info_Scraper as scraper
+from Prueba import Insta_Info_Scraper as scraper
 
 import dash
 import dash_core_components as dcc
