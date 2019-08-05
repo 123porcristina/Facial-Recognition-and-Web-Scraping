@@ -149,6 +149,12 @@ def gen(camera):
             yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+def header_colors():
+    return {
+        'bg_color': '#e7625f',
+        'font_color': 'white'
+    }
+
 
 
 server = Flask(__name__)
@@ -164,7 +170,56 @@ app.layout = html.Div([
     html.Img(src="/video_feed")
 ])
 
+app.layout = html.Div([
+    html.Div([
+        html.Div(children=[
+            html.H2(children='Facial Recognition and web scrapping',
+                    style={'textAlign': 'center', 'color': 'white', 'backgroundColor':'#e7625f'},
+                    className= "twelve columns"), #title occupies 9 cols
+
+            html.Div(children=''' 
+                        Dash: Webcam Test - prueba
+                        ''',
+                     className="nine columns")#this subtitle occupies 9 columns
+        ], className = "row"),
+
+        html.Div([
+            # html.Div(dcc.Input(id='input-box', type='text')),
+            html.Button("Capture", id='button', className="button_instruction"),
+            html.Button("Train", className="demo_button", id="demo"),
+            # html.Div(id='output-container-button',
+            #          children='Enter a value and press submit')
+        ]),
+
+        html.Div([
+            # dcc.Upload(
+            #     id='upload-data',
+            #     children=html.Div([
+            #         'Drag and Drop or ',
+            #         html.A('Select Files')
+            #     ]),
+            #     style={
+            #         'width': '100%',
+            #         'height': '60px',
+            #         'lineHeight': '60px',
+            #         'borderWidth': '1px',
+            #         'borderStyle': 'dashed',
+            #         'borderRadius': '5px',
+            #         'textAlign': 'center',
+            #         'margin': '10px'
+            #     },
+            #     # Allow multiple files to be uploaded
+            #     multiple=True
+            # ),
+            # html.Div([
+            #     html.Div(id='output-data-upload'),
+            #     # html.Div(id='output-data-info'),
+            # ], className="row")
+            html.Img(src="/video_feed")
+        ], className='row'),
+    ])
+])
+
+
 if __name__ == '__main__':
     app.run_server(debug=False)
-
-
