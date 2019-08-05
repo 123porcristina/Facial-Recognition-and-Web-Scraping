@@ -125,8 +125,8 @@ class VideoCamera(object):
 
             #draw rectangle
             cv2.rectangle(frame, (left, top), (right, bottom),(0, 255, 0), 2)
-            saved = "images/face" + str(i) + ".jpg"
-            cv2.imwrite(saved, frame)
+            #saved = "images/face" + str(i) + ".jpg"
+            #cv2.imwrite(saved, frame)
             
             # draw the predicted face name and instagram status on the image
             # if username is recognized  from the camera, save the url in a text file
@@ -149,6 +149,8 @@ def gen(camera):
             yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
+
+
 server = Flask(__name__)
 app = dash.Dash(__name__, server=server)
 
@@ -164,3 +166,5 @@ app.layout = html.Div([
 
 if __name__ == '__main__':
     app.run_server(debug=False)
+
+

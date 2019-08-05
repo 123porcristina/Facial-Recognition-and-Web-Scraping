@@ -11,7 +11,7 @@ import pickle
 import time
 import cv2
 # from web_scraping import Insta_Info_Scraper as scraper
-from Prueba import Insta_Info_Scraper as scraper
+import Insta_Info_Scraper as scraper
 
 
 # construct the argument parser and parse the arguments

@@ -31,34 +31,46 @@ class Insta_Info_Scraper:
         if name not in self.insta_dict.values():
             return self.insta_dict[name]
         else:
+            print("user not found")
             return "User not found"
 
     # Get info by doing a request. In this case we are using Instagram.
     # This is called everytime is a new face on the screen
     def getinfo(self, url, name):
-
-        html = urllib.request.urlopen(url, context=self.ctx).read()
-        soup = BeautifulSoup(html, 'html.parser')
-        data = soup.find_all('meta', attrs={'property': 'og:description'
-                                            })
-        text = data[0].get('content').split()
-        user = '%s %s %s' % (text[-3], text[-2], text[-1])
-        followers = text[0]
-        following = text[2]
-        posts = text[4]
-
+        print("getinfo error 1 = url is", url,"name is", name)
+        if name == "Unknown":
         # add new info to the dictionary
-        info_instagram = {name: {'User': user,
+            info_instagram = {name: {'User': name,
+                                 'Followers': name,
+                                 'Following': name,
+                                 'Posts': name}}
+            self.insta_dict.update(info_instagram)
+            print('User: Unknown')
+            print('---------------------------')
+        else:
+            html = urllib.request.urlopen(url, context=self.ctx).read()
+            print("getinfo error 2")
+            soup = BeautifulSoup(html, 'html.parser')
+            data = soup.find_all('meta', attrs={'property': 'og:description'
+                                            })
+            text = data[0].get('content').split()
+            user = '%s %s %s' % (text[-3], text[-2], text[-1])
+            followers = text[0]
+            following = text[2]
+            posts = text[4]
+
+            # add new info to the dictionary
+            info_instagram = {name: {'User': user,
                                  'Followers': followers,
                                  'Following': following,
                                  'Posts': posts}}
-        self.insta_dict.update(info_instagram)
+            self.insta_dict.update(info_instagram)
 
-        print('User:', user)
-        print('Followers:', followers)
-        print('Following:', following)
-        print('Posts:', posts)
-        print('---------------------------')
+            print('User:', user)
+            print('Followers:', followers)
+            print('Following:', following)
+            print('Posts:', posts)
+            print('---------------------------')
 
     # Set info about the user on the screen according to the face on it
     def setTextScreen(self, frame, x, h, y, w, name):
@@ -86,7 +98,9 @@ class Insta_Info_Scraper:
                 self.content = f.readlines()
             self.content = [x.strip() for x in self.content]
             for url in self.content:
+                print("main error1")
                 self.getinfo(url, name)
+                print("main error2")
                 self.setTextScreen(frame, x, h, y, w, name)
         else: # when the face is not new just get the info from the dictionary
             self.setTextScreen(frame, x, h, y, w, name)
