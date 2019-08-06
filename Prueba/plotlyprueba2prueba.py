@@ -153,31 +153,6 @@ def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-
-# app.layout = html.Div([
-#     html.H1("Webcam Test"),
-#     html.Img(src="/video_feed")
-# ])
-
-# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-# # external_stylesheets = ['https://github.com/plotly/dash-bio/blob/master/assets/volcanoplot-style.css']
-# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-
-# app.layout = html.Div([
-#     html.Div([
-#         html.Div(children=[
-#             html.H1(children='Facial Recognition and web scrapping',
-#                     style={'textAlign': 'center', 'color': 'white', 'backgroundColor': '#C50063'},
-#                     className="twelve columns"),  # title occupies 9 cols
-#
-#             html.Div(children='''
-#                         Dash: Webcam Test - prueba
-#                         ''',
-#                      className="nine columns")  # this subtitle occupies 9 columns
-#         ], className="row"),
-
-######################
 # App Layout
 app.layout = html.Div(
     children=[
@@ -213,7 +188,7 @@ app.layout = html.Div(
                                                     'This project was created by Cristina Giraldo '
                                                     'and Gregg Legarda. We created this project because'
                                                     'we have curiosity about how computer vision works '
-                                                    'especially in the facial recognition area. '
+                                                    'in the facial recognition area. '
 
                                                 ),
                                                 html.P(
@@ -263,12 +238,12 @@ app.layout = html.Div(
                 html.Div(
                     className="eight columns card-left",
                     children=[
-                        html.Div(
+                        html.Div(id="video1",
                             className="bg-white",
                             children=[
                                 html.H5("Recognition"),
                                 html.Img(id="video"),
-                                html.Img(src="/video_feed")
+                                # html.Img(src="/video_feed")
                                 # dcc.Graph(id="plot"),
                             ],
                         )
@@ -281,8 +256,7 @@ app.layout = html.Div(
 )
 
 
-# def callbacks(app):  # pylint: disable=redefined-outer-name
-@app.callback(Output('container-button-timestamp', 'children'),
+@app.callback(Output('video1', 'children'),
               [Input('btn-1', 'n_clicks_timestamp'),
                Input('btn-2', 'n_clicks_timestamp'),
                Input('btn-3', 'n_clicks_timestamp')])
@@ -290,20 +264,35 @@ def displayClick(btn1, btn2, btn3):
     if int(btn1) > int(btn2) and int(btn1) > int(btn3):
         msg = 'Button 1 was most recently clicked'
         print('Button 1 was most recently clicked')
-    elif int(btn2) > int(btn1) and int(btn2) > int(btn3):
-        msg = 'Button 2 was most recently clicked'
-        print('Button 2 was most recently clicked')
-    elif int(btn3) > int(btn1) and int(btn3) > int(btn2):
-        msg = 'Button 3 was most recently clicked'
-        print('Button 3 was most recently clicked')
+        prueba = "botoncito1"
+    elif int(btn2) > int(btn1) and int(btn2) > int(btn3): #button 2 train
+        # msg = 'Button 2 was most recently clicked'
+        # print('Button 2 was most recently clicked')
+        # prueba = "botoncito2"
+        import encode_faces # calls the encoding when button train is pressed
+    elif int(btn3) > int(btn1) and int(btn3) > int(btn2):#button 3 - Recognition
+        # msg = 'Button 3 was most recently clicked'
+        # print('Button 3 was most recently clicked')
+        # # html.Img(src="/video_feed")
+        return html.Div([
+            # html.Img(src="/video_feed")
+            # html.Div('btn1: {}'.format(btn1)),
+            # html.Div('btn2: {}'.format(btn2)),
+            # html.Div('btn3: {}'.format(btn3)),
+            # html.Div(msg),
+            html.Div(html.Img(src="/video_feed")),
+        ])
     else:
         msg = 'None of the buttons have been clicked yet'
-    return html.Div([
-        html.Div('btn1: {}'.format(btn1)),
-        html.Div('btn2: {}'.format(btn2)),
-        html.Div('btn3: {}'.format(btn3)),
-        html.Div(msg)
-    ])
+        return html.Div([])
+    # return html.Div([
+    #     # html.Img(src="/video_feed")
+    #     html.Div('btn1: {}'.format(btn1)),
+    #     html.Div('btn2: {}'.format(btn2)),
+    #     html.Div('btn3: {}'.format(btn3)),
+    #     html.Div(msg),
+    #     html.Div(html.Img(src="/video_feed")),
+    # ])
 
 
 if __name__ == '__main__':

@@ -6,8 +6,8 @@ import imutils
 import pickle
 import time
 import cv2
-import Insta_Info_Scraper as scraper
-
+# import Insta_Info_Scraper as scraper
+from Prueba import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -165,16 +165,21 @@ def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
-app.layout = html.Div([
-    html.H1("Webcam Test"),
-    html.Img(src="/video_feed")
-])
+# app.layout = html.Div([
+#     html.H1("Webcam Test"),
+#     html.Img(src="/video_feed")
+# ])
+
+# external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+# app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+
+
 
 app.layout = html.Div([
     html.Div([
         html.Div(children=[
-            html.H2(children='Facial Recognition and web scrapping',
-                    style={'textAlign': 'center', 'color': 'white', 'backgroundColor':'#e7625f'},
+            html.H1(children='Facial Recognition and web scrapping',
+                    style={'textAlign': 'center', 'color': 'white', 'backgroundColor':'#C50063'},
                     className= "twelve columns"), #title occupies 9 cols
 
             html.Div(children=''' 

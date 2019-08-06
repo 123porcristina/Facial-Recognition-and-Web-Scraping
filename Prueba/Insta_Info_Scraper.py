@@ -89,7 +89,7 @@ class Insta_Info_Scraper:
         # it verifies if the info to get is new
         val = self.check_info(name)
 
-        if val is False: # if the face is new get the info by doing a request
+        if val is False :  # if the face is new get the info by doing a request
             self.ctx = ssl.create_default_context()
             self.ctx.check_hostname = False
             self.ctx.verify_mode = ssl.CERT_NONE
