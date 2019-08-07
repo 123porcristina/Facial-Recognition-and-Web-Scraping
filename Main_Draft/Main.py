@@ -6,8 +6,8 @@ import imutils
 import pickle
 import time
 import cv2
-import Insta_Info_Scraper as scraper
-#from Prueba import Insta_Info_Scraper as scraper
+# import Insta_Info_Scraper as scraper
+from Prueba import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -15,11 +15,7 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 
 from flask import Flask, Response
-import cv2
-
-import datetime
-import json
-
+import os
 
 
 # construct the argument parser and parse the arguments
@@ -47,21 +43,23 @@ obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 
 # initialize the video stream and pointer to output video file, then
 # allow the camera sensor to warm up
-print("[INFO] starting video stream...")
+# print("[INFO] starting video stream...")
 # vs = VideoStream(src=0).start()
-
 writer = None
 
-
-# time.sleep(2.0)
+os.getenv("OPENCV_VIDEOIO_PRIORITY_MSMF", None)
+os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
 
 
 class VideoCamera(object):
     def __init__(self):
+        print("[INFO] starting video stream...")
         self.video = cv2.VideoCapture(0)
 
     def __del__(self):
         self.video.release()
+    # def release(self):
+    #     self.video.release()
 
     def get_frame(self):
         success, frame = self.video.read()
@@ -83,7 +81,7 @@ class VideoCamera(object):
 
         # loop over the facial embeddings
         for encoding in encodings:
-            # attempt to match each face in the input image to our known
+            # attempt to match each face in the input images to our known
             # encodings
             matches = face_recognition.compare_faces(data["encodings"], encoding)
             name = "Unknown"
@@ -122,7 +120,7 @@ class VideoCamera(object):
             # saved = "images/face" + str(i) + ".jpg"
             # cv2.imwrite(saved, frame)
 
-            # draw the predicted face name and instagram status on the image
+            # draw the predicted face name and instagram status on the images
             # if username is recognized  from the camera, save the url in a text file
             # to be pulled out later by a scraper
             open('users.txt', 'w').close()  # clear5 it first
@@ -141,18 +139,19 @@ def gen(camera):
         frame = camera.get_frame()
         if args["display"] > 0:
             yield (b'--frame\r\n'
-                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
+                   b'Content-Type: images/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
 
 
 
 server = Flask(__name__)
-app = dash.Dash(__name__, server=server,  external_stylesheets=[dbc.themes.BOOTSTRAP])
-
+# app = dash.Dash(__name__, server=server,  external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, server=server)
 
 @server.route('/video_feed')
 def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+
 
 # App Layout
 app.layout = html.Div(
@@ -222,33 +221,9 @@ app.layout = html.Div(
                                                                     n_clicks_timestamp=0),
                                                         html.Button('Facial Recognition', id='btn-3',
                                                                     n_clicks_timestamp=0),
-                                                        html.Button('Button 4', id='btn-4', n_clicks_timestamp=0),
-
-                                                        dbc.Button("Primary", outline=True, color="primary",
-                                                                   className="mr-1", id='btn-5'),
-                                                        dbc.Button(
-                                                            "Secondary", outline=True, color="secondary",
-                                                            className="mr-1"
-                                                        ),
-                                                        dbc.Button("Success", outline=True, color="success",
-                                                                   className="mr-1"),
-                                                        dbc.Button("Warning", outline=True, color="warning",
-                                                                   className="mr-1"),
-                                                        dbc.Button("Danger", outline=True, color="danger",
-                                                                   className="mr-1"),
-                                                        dbc.Button("Info", outline=True, color="info",
-                                                                   className="mr-1"),
-                                                        dbc.Button("Light", outline=True, color="light",
-                                                                   className="mr-1"),
-                                                        dbc.Button("Dark", outline=True, color="dark"),
-
-
-
-
+                                                        html.Button('Stop', id='btn-4', n_clicks_timestamp=0),
 
                                                         html.Div(id='container-button-timestamp')
-
-
 
                                                     ])
 
@@ -265,115 +240,107 @@ app.layout = html.Div(
                 html.Div(
                     className="eight columns card-left",
                     children=[
-                        html.Div(id="video1",
+                        html.Div(
                             className="bg-white",
                             children=[
                                 html.H5("Recognition"),
-                                html.Img(id="video"),
-                                dcc.Loading(id="loading-1", children=[html.Div(id="output-1")], type="default"),
-                                # html.Img(src="/video_feed")
+                                html.Div(id='output-video'),
+                                dcc.Loading(id="loading-1", children=[html.Div(id="loading-output-1")], type="default"),
                                 # dcc.Graph(id="plot"),
                             ],
-                        ),
-
-                        ###loading...
-                        # html.Div(
-                        #     children=[
-                        #         dcc.Loading(id="loading-1", children=[html.Div(id="output-1")], type="default"),
-                        #         # dcc.Input(id="input-1", value='Input triggers local spinner'),
-                        #     ],
-                        # ),#endloading...
-
-
+                        )
                     ],
                 ),
-                # dcc.Store(id="error", storage_type="memory"),
+                dcc.Store(id="error", storage_type="memory"),
             ],
         ),
     ]
 )
-########################### Button Actions #################################
-imagecount = 1
-@app.callback(Output('video1', 'children'),
-              [Input('btn-1', 'n_clicks_timestamp'),
-               # Input('btn-2', 'n_clicks_timestamp'),
-               Input('btn-3', 'n_clicks_timestamp')])
+
+# @app.callback(Output('output-video', 'children'),
+#               [Input('btn-1', 'n_clicks_timestamp'),
+#                Input('btn-2', 'n_clicks_timestamp'),
+#                Input('btn-3', 'n_clicks_timestamp')])
 # def displayClick(btn1, btn2, btn3):
-def displayClick(btn1, btn3):
-    global imagecount
-    # if int(btn1) > int(btn2) and int(btn1) > int(btn3):
-    if int(btn1) > int(btn3):
-        ########capture faces and save for training#######
+#     if int(btn1) > int(btn2) and int(btn1) > int(btn3):
+#         msg = 'Button 1 was most recently clicked'
+#     elif int(btn2) > int(btn1) and int(btn2) > int(btn3):
+#         # msg = 'Button 2 was most recently clicked'
+#         time.sleep(1)
+#         msg = 'Training has finished!'
+#         return html.Div([html.Div(msg)])
+#     elif int(btn3) > int(btn1) and int(btn3) > int(btn2):
+#         msg = 'Button 3 was most recently clicked'
+#         return html.Div([html.Div(html.Img(src="/video_feed"))])
+#     else:
+#         msg = 'None of the buttons have been clicked yet'
+#         return html.Div([])
+#
+#
+# if __name__ == '__main__':
+#     app.run_server(debug=True)
+
+image_count = 1
+
+
+@app.callback(Output('output-video', 'children'),
+              [Input('btn-1', 'n_clicks_timestamp'),
+               Input('btn-2', 'n_clicks_timestamp'),
+               Input('btn-3', 'n_clicks_timestamp'),
+               Input('btn-4', 'n_clicks_timestamp')])
+def displayClick(btn1, btn2, btn3, btn4):
+# def displayClick(btn1, btn3):
+    global image_count
+
+    if int(btn1) > int(btn2) and int(btn1) > int(btn3) and int(btn1) > int(btn4):
+    # if int(btn1) > int(btn3):
+        #allows to turn of the light of the cam
+        # os.getenv("OPENCV_VIDEOIO_PRIORITY_MSMF", None)
+        # os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
+
+        # capture faces and save for training
         video_capture = cv2.VideoCapture(0)
-        time.sleep(1)
+        time.sleep(2)
         ret, frame = video_capture.read()
-        saved = "images/face" + str(imagecount) + ".jpg"
+        saved = "images/face" + str(image_count) + ".jpg"
         cv2.imwrite(saved, frame)
-        imagecount=imagecount+1
+        image_count = image_count+1
         video_capture.release()
         cv2.destroyAllWindows()
         return None
-    # elif int(btn2) > int(btn1) and int(btn2) > int(btn3): #button 2 train
-        # msg = 'Button 2 was most recently clicked'
-        # print('Button 2 was most recently clicked')
-        # prueba = "botoncito2"
+    elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
+        msg = 'Button 2 was most recently clicked'
+        print('Button 2 was most recently clicked')
+        # time.sleep(1)
         # import encode_faces # calls the encoding when button train is pressed
-    # elif int(btn3) > int(btn1) and int(btn3) > int(btn2):  # button 3 - Recognition
-    elif int(btn3) > int(btn1) :#button 3 - Recognition
-        msg = 'Button 3 was most recently clicked'
-        print('Button 3 was most recently clicked')
-        # # html.Img(src="/video_feed")
         return html.Div([
-            # html.Img(src="/video_feed")
-            # html.Div('btn1: {}'.format(btn1)),
-            # html.Div('btn2: {}'.format(btn2)),
-            # html.Div('btn3: {}'.format(btn3)),
-            # html.Div(msg),
-            html.Div(html.Img(src="/video_feed")),
+            html.Div(msg),
         ])
+
+    elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4):  # button 3 - Recognition
+    # elif int(btn3) > int(btn1) :#button 3 - Recognition
+        return html.Div([ html.Div(html.Img(src="/video_feed"))])
+    elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3):
+        os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
+        return html.Div([])
     else:
         msg = 'None of the buttons have been clicked yet'
         return html.Div([])
-    # return html.Div([
-    #     # html.Img(src="/video_feed")
-    #     html.Div('btn1: {}'.format(btn1)),
-    #     html.Div('btn2: {}'.format(btn2)),
-    #     html.Div('btn3: {}'.format(btn3)),
-    #     html.Div(msg),
-    #     html.Div(html.Img(src="/video_feed")),
-    # ])
 
 
-@app.callback(Output('output-1', 'children'),
+@app.callback(Output('loading-output-1', 'children'),
               [Input('btn-2', 'n_clicks_timestamp')])
 def displayLoadTrain(btn2):
     if int(btn2):  # button 2 train
-        # msg = 'Button 2 was most recently clicked'
-        print('Button 2 was most recently clicked')
-        # prueba = "botoncito2"
+        # print('Button 2 was most recently clicked')
         time.sleep(1)
-        #from Prueba
-        import encode_faces # calls the encoding when button train is pressed
+        from Prueba import encode_faces # calls the encoding when button train is pressed
         msg = 'Training has finished!'
         return html.Div([
-            # html.Img(src="/video_feed")
-            # html.Div('btn1: {}'.format(btn1)),
-            # html.Div('btn2: {}'.format(btn2)),
-            # html.Div('btn3: {}'.format(btn3)),
             html.Div(msg),
-            # html.Div(html.Img(src="/video_feed")),
         ])
-    # else:
-    #     msg = 'None of the buttons have been clicked yet'
-    #     return html.Div([])
-    # return html.Div([
-    #     # html.Img(src="/video_feed")
-    #     html.Div('btn1: {}'.format(btn1)),
-    #     html.Div('btn2: {}'.format(btn2)),
-    #     html.Div('btn3: {}'.format(btn3)),
-    #     html.Div(msg),
-    #     html.Div(html.Img(src="/video_feed")),
-    # ])
-####################################################################
+
+
+
 if __name__ == '__main__':
     app.run_server(debug=True)
