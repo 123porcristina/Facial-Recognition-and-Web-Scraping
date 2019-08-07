@@ -12,6 +12,7 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
+import dash_bootstrap_components as dbc
 
 from flask import Flask, Response
 import cv2
@@ -145,7 +146,7 @@ def gen(camera):
 
 
 server = Flask(__name__)
-app = dash.Dash(__name__, server=server)
+app = dash.Dash(__name__, server=server,  external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 
 @server.route('/video_feed')
@@ -160,7 +161,7 @@ app.layout = html.Div(
         html.Div(
             className="study-browser-banner row",
             children=[
-                html.H2(className="h2-title", children="FACIAL RECOGNITION & WEB SCRAPPING"),
+                html.H2(className="h2-title", children="FACIAL RECOGNITION & WEB SCRAPING"),
             ],
         ),
 
@@ -222,7 +223,33 @@ app.layout = html.Div(
                                                         html.Button('Facial Recognition', id='btn-3',
                                                                     n_clicks_timestamp=0),
                                                         html.Button('Button 4', id='btn-4', n_clicks_timestamp=0),
+
+                                                        dbc.Button("Primary", outline=True, color="primary",
+                                                                   className="mr-1", id='btn-5'),
+                                                        dbc.Button(
+                                                            "Secondary", outline=True, color="secondary",
+                                                            className="mr-1"
+                                                        ),
+                                                        dbc.Button("Success", outline=True, color="success",
+                                                                   className="mr-1"),
+                                                        dbc.Button("Warning", outline=True, color="warning",
+                                                                   className="mr-1"),
+                                                        dbc.Button("Danger", outline=True, color="danger",
+                                                                   className="mr-1"),
+                                                        dbc.Button("Info", outline=True, color="info",
+                                                                   className="mr-1"),
+                                                        dbc.Button("Light", outline=True, color="light",
+                                                                   className="mr-1"),
+                                                        dbc.Button("Dark", outline=True, color="dark"),
+
+
+
+
+
                                                         html.Div(id='container-button-timestamp')
+
+
+
                                                     ])
 
                                                 ])
@@ -243,10 +270,21 @@ app.layout = html.Div(
                             children=[
                                 html.H5("Recognition"),
                                 html.Img(id="video"),
+                                dcc.Loading(id="loading-1", children=[html.Div(id="output-1")], type="default"),
                                 # html.Img(src="/video_feed")
                                 # dcc.Graph(id="plot"),
                             ],
-                        )
+                        ),
+
+                        ###loading...
+                        # html.Div(
+                        #     children=[
+                        #         dcc.Loading(id="loading-1", children=[html.Div(id="output-1")], type="default"),
+                        #         # dcc.Input(id="input-1", value='Input triggers local spinner'),
+                        #     ],
+                        # ),#endloading...
+
+
                     ],
                 ),
                 # dcc.Store(id="error", storage_type="memory"),
@@ -258,21 +296,24 @@ app.layout = html.Div(
 
 @app.callback(Output('video1', 'children'),
               [Input('btn-1', 'n_clicks_timestamp'),
-               Input('btn-2', 'n_clicks_timestamp'),
+               # Input('btn-2', 'n_clicks_timestamp'),
                Input('btn-3', 'n_clicks_timestamp')])
-def displayClick(btn1, btn2, btn3):
-    if int(btn1) > int(btn2) and int(btn1) > int(btn3):
+# def displayClick(btn1, btn2, btn3):
+def displayClick(btn1, btn3):
+    # if int(btn1) > int(btn2) and int(btn1) > int(btn3):
+    if int(btn1) > int(btn3):
         msg = 'Button 1 was most recently clicked'
         print('Button 1 was most recently clicked')
         prueba = "botoncito1"
-    elif int(btn2) > int(btn1) and int(btn2) > int(btn3): #button 2 train
+    # elif int(btn2) > int(btn1) and int(btn2) > int(btn3): #button 2 train
         # msg = 'Button 2 was most recently clicked'
         # print('Button 2 was most recently clicked')
         # prueba = "botoncito2"
-        import encode_faces # calls the encoding when button train is pressed
-    elif int(btn3) > int(btn1) and int(btn3) > int(btn2):#button 3 - Recognition
-        # msg = 'Button 3 was most recently clicked'
-        # print('Button 3 was most recently clicked')
+        # import encode_faces # calls the encoding when button train is pressed
+    # elif int(btn3) > int(btn1) and int(btn3) > int(btn2):  # button 3 - Recognition
+    elif int(btn3) > int(btn1) :#button 3 - Recognition
+        msg = 'Button 3 was most recently clicked'
+        print('Button 3 was most recently clicked')
         # # html.Img(src="/video_feed")
         return html.Div([
             # html.Img(src="/video_feed")
@@ -294,6 +335,36 @@ def displayClick(btn1, btn2, btn3):
     #     html.Div(html.Img(src="/video_feed")),
     # ])
 
+
+@app.callback(Output('output-1', 'children'),
+              [Input('btn-2', 'n_clicks_timestamp')])
+def displayLoadTrain(btn2):
+    if int(btn2):  # button 2 train
+        # msg = 'Button 2 was most recently clicked'
+        print('Button 2 was most recently clicked')
+        # prueba = "botoncito2"
+        time.sleep(1)
+        from Prueba import encode_faces # calls the encoding when button train is pressed
+        msg = 'Training has finished!'
+        return html.Div([
+            # html.Img(src="/video_feed")
+            # html.Div('btn1: {}'.format(btn1)),
+            # html.Div('btn2: {}'.format(btn2)),
+            # html.Div('btn3: {}'.format(btn3)),
+            html.Div(msg),
+            # html.Div(html.Img(src="/video_feed")),
+        ])
+    # else:
+    #     msg = 'None of the buttons have been clicked yet'
+    #     return html.Div([])
+    # return html.Div([
+    #     # html.Img(src="/video_feed")
+    #     html.Div('btn1: {}'.format(btn1)),
+    #     html.Div('btn2: {}'.format(btn2)),
+    #     html.Div('btn3: {}'.format(btn3)),
+    #     html.Div(msg),
+    #     html.Div(html.Img(src="/video_feed")),
+    # ])
 
 if __name__ == '__main__':
     app.run_server(debug=True)
