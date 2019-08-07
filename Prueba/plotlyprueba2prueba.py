@@ -6,8 +6,8 @@ import imutils
 import pickle
 import time
 import cv2
-# import Insta_Info_Scraper as scraper
-from Prueba import Insta_Info_Scraper as scraper
+import Insta_Info_Scraper as scraper
+#from Prueba import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -292,19 +292,27 @@ app.layout = html.Div(
         ),
     ]
 )
-
-
+########################### Button Actions #################################
+imagecount = 1
 @app.callback(Output('video1', 'children'),
               [Input('btn-1', 'n_clicks_timestamp'),
                # Input('btn-2', 'n_clicks_timestamp'),
                Input('btn-3', 'n_clicks_timestamp')])
 # def displayClick(btn1, btn2, btn3):
 def displayClick(btn1, btn3):
+    global imagecount
     # if int(btn1) > int(btn2) and int(btn1) > int(btn3):
     if int(btn1) > int(btn3):
-        msg = 'Button 1 was most recently clicked'
-        print('Button 1 was most recently clicked')
-        prueba = "botoncito1"
+        ########capture faces and save for training#######
+        video_capture = cv2.VideoCapture(0)
+        time.sleep(1)
+        ret, frame = video_capture.read()
+        saved = "images/face" + str(imagecount) + ".jpg"
+        cv2.imwrite(saved, frame)
+        imagecount=imagecount+1
+        video_capture.release()
+        cv2.destroyAllWindows()
+        return None
     # elif int(btn2) > int(btn1) and int(btn2) > int(btn3): #button 2 train
         # msg = 'Button 2 was most recently clicked'
         # print('Button 2 was most recently clicked')
@@ -344,7 +352,8 @@ def displayLoadTrain(btn2):
         print('Button 2 was most recently clicked')
         # prueba = "botoncito2"
         time.sleep(1)
-        from Prueba import encode_faces # calls the encoding when button train is pressed
+        #from Prueba
+        import encode_faces # calls the encoding when button train is pressed
         msg = 'Training has finished!'
         return html.Div([
             # html.Img(src="/video_feed")
@@ -365,6 +374,6 @@ def displayLoadTrain(btn2):
     #     html.Div(msg),
     #     html.Div(html.Img(src="/video_feed")),
     # ])
-
+####################################################################
 if __name__ == '__main__':
     app.run_server(debug=True)
