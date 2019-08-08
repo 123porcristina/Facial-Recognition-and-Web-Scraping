@@ -230,7 +230,10 @@ app.layout = html.Div(
                                                                     n_clicks_timestamp=0),
                                                         html.Button('Facial Recognition', id='btn-3',
                                                                     n_clicks_timestamp=0),
-                                                        html.Button('Stop', id='btn-4', n_clicks_timestamp=0),
+                                                        html.Button('Stop video', id='btn-4', n_clicks_timestamp=0),
+
+                                                        html.Button('Haar', id='btn-5', n_clicks_timestamp=0),
+                                                        html.Button('Gradient', id='btn-6', n_clicks_timestamp=0),
 
                                                         html.Div(id='container-button-timestamp')
 
