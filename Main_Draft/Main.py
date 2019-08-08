@@ -16,9 +16,9 @@ import dash_bootstrap_components as dbc
 
 from flask import Flask, Response
 import os
+from imutils.video import videostream
 
-
-# construct the argument parser and parse the arguments
+"""construct the argument parser and parse the arguments"""
 ap = argparse.ArgumentParser()
 ap.add_argument("-e", "--encodings", required=False,
                 help="path to serialized db of facial encodings")
@@ -30,11 +30,11 @@ ap.add_argument("-d", "--detection-method", type=str, default="hog",
                 help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
 
-# load the known faces and embeddings
+"""load the known faces and embeddings"""
 print("[INFO] loading encodings...")
 data = pickle.loads(open("encodings.pickle", "rb").read())
 
-# scraper
+"""scraper"""
 font = cv2.FONT_HERSHEY_SIMPLEX
 color = (255, 255, 255)
 stroke = 1
@@ -47,46 +47,52 @@ obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 # vs = VideoStream(src=0).start()
 writer = None
 
+"""allows to turn of the light of the cam"""
 os.getenv("OPENCV_VIDEOIO_PRIORITY_MSMF", None)
 os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
 
 
 class VideoCamera(object):
     def __init__(self):
-        print("[INFO] starting video stream...")
         self.video = cv2.VideoCapture(0)
+        print("[INFO] starting video stream...")
 
     def __del__(self):
+        print("DEL fue ejecutado")
         self.video.release()
+
     # def release(self):
+    #     print("DEL fue ejecutado")
     #     self.video.release()
+    #     cv2.destroyAllWindows()
+
 
     def get_frame(self):
         success, frame = self.video.read()
         # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         #####################################################
-        # convert the input frame from BGR to RGB then resize it to have
-        # a width of 750px (to speedup processing)
+        """convert the input frame from BGR to RGB then resize it to have
+        a width of 750px (to speedup processing)"""
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         rgb = imutils.resize(frame, width=750)
         r = frame.shape[1] / float(rgb.shape[1])
 
-        # detect the (x, y)-coordinates of the bounding boxes
-        # corresponding to each face in the input frame, then compute
-        # the facial embeddings for each face
+        """detect the (x, y)-coordinates of the bounding boxes
+        corresponding to each face in the input frame, then compute
+        the facial embeddings for each face"""
         boxes = face_recognition.face_locations(rgb, model=args["detection_method"])
         encodings = face_recognition.face_encodings(rgb, boxes)
         names = []
 
-        # loop over the facial embeddings
+        """loop over the facial embeddings for face detection"""
         for encoding in encodings:
             # attempt to match each face in the input images to our known
             # encodings
             matches = face_recognition.compare_faces(data["encodings"], encoding)
             name = "Unknown"
 
-            # check to see if we have found a match
+            """check to see if we have found a match"""
             if True in matches:
                 # find the indexes of all matched faces then initialize a
                 # dictionary to count the total number of times each face
@@ -143,6 +149,7 @@ def gen(camera):
 
 
 
+
 server = Flask(__name__)
 # app = dash.Dash(__name__, server=server,  external_stylesheets=[dbc.themes.BOOTSTRAP])
 app = dash.Dash(__name__, server=server)
@@ -151,6 +158,8 @@ app = dash.Dash(__name__, server=server)
 def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
+# def stop():
+#     return VideoCamera.release(0)
 
 
 # App Layout
@@ -244,6 +253,7 @@ app.layout = html.Div(
                             className="bg-white",
                             children=[
                                 html.H5("Recognition"),
+                                # dcc.Store(id='memory-output'),
                                 html.Div(id='output-video'),
                                 dcc.Loading(id="loading-1", children=[html.Div(id="loading-output-1")], type="default"),
                                 # dcc.Graph(id="plot"),
@@ -294,11 +304,8 @@ def displayClick(btn1, btn2, btn3, btn4):
 
     if int(btn1) > int(btn2) and int(btn1) > int(btn3) and int(btn1) > int(btn4):
     # if int(btn1) > int(btn3):
-        #allows to turn of the light of the cam
-        # os.getenv("OPENCV_VIDEOIO_PRIORITY_MSMF", None)
-        # os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
-
         # capture faces and save for training
+        print("button CAPTURE was pressed")
         video_capture = cv2.VideoCapture(0)
         time.sleep(2)
         ret, frame = video_capture.read()
@@ -307,6 +314,7 @@ def displayClick(btn1, btn2, btn3, btn4):
         image_count = image_count+1
         video_capture.release()
         cv2.destroyAllWindows()
+        del video_capture
         return None
     elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
         msg = 'Button 2 was most recently clicked'
@@ -320,9 +328,14 @@ def displayClick(btn1, btn2, btn3, btn4):
     elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4):  # button 3 - Recognition
     # elif int(btn3) > int(btn1) :#button 3 - Recognition
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
+
     elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3):
-        os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
-        return html.Div([])
+        print("button STOP was pressed")
+        # stop()
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)
+        return html.Div([ html.Div(html.Img(src=" "))])
+
     else:
         msg = 'None of the buttons have been clicked yet'
         return html.Div([])
