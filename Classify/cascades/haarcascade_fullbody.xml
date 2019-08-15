@@ -106,7 +106,7 @@
  
  On an Intel Xeon 1.7GHz machine the detectors operate at something
  between 6Hz to 14 Hz (on 352 x 288 frames per second) depending on the
- detector. The detectors work as well on much lower image resolutions
+ detector. The detectors work as well on much lower images resolutions
  which is always an interesting possibility for speed-ups or
  "coarse-to-fine" search strategies.
  
@@ -125,12 +125,12 @@
  
  2) Don't expect these detectors to be as accurate as a frontal face detector.
  A frontal face as a pattern is pretty distinct with respect to other
- patterns occurring in the world (i.e. image "background"). This is not so
+ patterns occurring in the world (i.e. images "background"). This is not so
  for upper, lower and especially full bodies, because they have to rely
  on fragile silhouette information rather than internal (facial) features.
  Still, we found especially the upper body detector to perform amazingly well.
  In contrast to a face detector these detectors will also work at very low
- image resolutions
+ images resolutions
  
  Acknowledgements
  ================

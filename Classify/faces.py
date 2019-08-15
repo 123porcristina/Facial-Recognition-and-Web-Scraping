@@ -52,7 +52,7 @@ while True:
         flags=cv2.CASCADE_SCALE_IMAGE
     )
 
-    # loop on every faces per slice of image on the cam
+    # loop on every faces per slice of images on the cam
     for (x, y, w, h) in faces:
         # Draw a rectangle around the face
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
@@ -60,7 +60,7 @@ while True:
         cv2.putText(frame, 'FACE', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
 
         cropped = gray[y:y + w, x:x + w]
-        gx, gy = np.gradient(cropped)  # take the gradiant to vectorize the image into two values
+        gx, gy = np.gradient(cropped)  # take the gradiant to vectorize the images into two values
         cropped = np.sqrt(np.square(gx) + np.square(gy))  # get magnitude to normalize it
 
         ########capture faces and save for training#######
@@ -110,7 +110,7 @@ while True:
         cv2.putText(frame, 'rightfist', (x + w, y + h), font, 2, (255, 255, 255), 2, cv2.LINE_AA)
 
     # Display the resulting frame###
-    # cv2.imshow('Video', cropped) # this is what the gradient vector image looks like
+    # cv2.imshow('Video', cropped) # this is what the gradient vector images looks like
     cv2.imshow('Video', frame)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

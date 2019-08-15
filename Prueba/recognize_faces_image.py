@@ -1,5 +1,5 @@
 # USAGE
-# python recognize_faces_image.py --encodings encodings.pickle --image examples/example_01.png 
+# python recognize_faces_image.py --encodings encodings.pickle --images examples/example_01.png
 
 # import the necessary packages
 import face_recognition
@@ -12,8 +12,8 @@ import logging
 ap = argparse.ArgumentParser()
 ap.add_argument("-e", "--encodings", required=True,
 	help="path to serialized db of facial encodings")
-ap.add_argument("-i", "--image", required=True,
-	help="path to input image")
+ap.add_argument("-i", "--images", required=True,
+	help="path to input images")
 ap.add_argument("-d", "--detection-method", type=str, default="hog",
 	help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
@@ -22,12 +22,12 @@ args = vars(ap.parse_args())
 print("[INFO] loading encodings...")
 data = pickle.loads(open(args["encodings"], "rb").read())
 
-# load the input image and convert it from BGR to RGB
-image = cv2.imread(args["image"])
+# load the input images and convert it from BGR to RGB
+image = cv2.imread(args["images"])
 rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 # detect the (x, y)-coordinates of the bounding boxes corresponding
-# to each face in the input image, then compute the facial embeddings
+# to each face in the input images, then compute the facial embeddings
 # for each face
 print("[INFO] recognizing faces...")
 boxes = face_recognition.face_locations(rgb,
@@ -51,7 +51,7 @@ while video_capture.isOpened():
 
 	# run detection and embedding models
 	for encoding in encodings:
-		# attempt to match each face in the input image to our known
+		# attempt to match each face in the input images to our known
 		# encodings
 		matches = face_recognition.compare_faces(data["encodings"],
 			encoding)
@@ -59,7 +59,7 @@ while video_capture.isOpened():
 
 # # loop over the facial embeddings
 # for encoding in encodings:
-# 	# attempt to match each face in the input image to our known
+# 	# attempt to match each face in the input images to our known
 # 	# encodings
 # 	matches = face_recognition.compare_faces(data["encodings"],
 # 		encoding)
@@ -89,12 +89,12 @@ while video_capture.isOpened():
 #
 # # loop over the recognized faces
 # for ((top, right, bottom, left), name) in zip(boxes, names):
-# 	# draw the predicted face name on the image
-# 	cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
+# 	# draw the predicted face name on the images
+# 	cv2.rectangle(images, (left, top), (right, bottom), (0, 255, 0), 2)
 # 	y = top - 15 if top - 15 > 15 else top + 15
-# 	cv2.putText(image, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
+# 	cv2.putText(images, name, (left, y), cv2.FONT_HERSHEY_SIMPLEX,
 # 		0.75, (0, 255, 0), 2)
 
-# show the output image
+# show the output images
 cv2.imshow("Image", image)
 cv2.waitKey(0)

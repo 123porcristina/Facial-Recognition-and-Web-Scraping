@@ -270,28 +270,6 @@ app.layout = html.Div(
     ]
 )
 
-# @app.callback(Output('output-video', 'children'),
-#               [Input('btn-1', 'n_clicks_timestamp'),
-#                Input('btn-2', 'n_clicks_timestamp'),
-#                Input('btn-3', 'n_clicks_timestamp')])
-# def displayClick(btn1, btn2, btn3):
-#     if int(btn1) > int(btn2) and int(btn1) > int(btn3):
-#         msg = 'Button 1 was most recently clicked'
-#     elif int(btn2) > int(btn1) and int(btn2) > int(btn3):
-#         # msg = 'Button 2 was most recently clicked'
-#         time.sleep(1)
-#         msg = 'Training has finished!'
-#         return html.Div([html.Div(msg)])
-#     elif int(btn3) > int(btn1) and int(btn3) > int(btn2):
-#         msg = 'Button 3 was most recently clicked'
-#         return html.Div([html.Div(html.Img(src="/video_feed"))])
-#     else:
-#         msg = 'None of the buttons have been clicked yet'
-#         return html.Div([])
-#
-#
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
 
 image_count = 1
 

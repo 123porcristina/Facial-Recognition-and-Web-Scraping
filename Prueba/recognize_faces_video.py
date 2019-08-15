@@ -70,7 +70,7 @@ while True:
 
 	# loop over the facial embeddings
 	for encoding in encodings:
-		# attempt to match each face in the input image to our known
+		# attempt to match each face in the input images to our known
 		# encodings
 		matches = face_recognition.compare_faces(data["encodings"],
 			encoding)
@@ -106,7 +106,7 @@ while True:
 		bottom = int(bottom * r)
 		left = int(left * r)
 		
-		# draw the predicted face name and instagram status on the image
+		# draw the predicted face name and instagram status on the images
         # if username is recognized  from the camera, save the url in a text file
         # to be pulled out later by a scraper
 		open('users.txt', 'w').close() #clear5 it first
