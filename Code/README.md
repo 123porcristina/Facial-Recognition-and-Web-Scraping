@@ -33,3 +33,25 @@ STEPS TO RUN THE MODEL
     Note: After initialize facial recognition if you want to push another button please press "STOP VIDEO".
          
  
+ 
+ Packages to import:
+ •    Requirements for imports are OpenCV, Pillow, Pickle, Os, numpy glib, requests
+ •    We used OpenCV features to help with this project
+ •    We used “haarcascade_frontalface_default.xml” to help detect faces in the webcam
+ •    We used faces-train.py to train the algorithm and to create our own yml file
+ 
+ 
+ 
+ 
+ Folders Outlines
+ - data set
+ -names of insta account, and photos 
+ 
+ - encode_faces.py
+ - encodingss.pickle
+ - Insta_Info_scraper.py
+ - users.txt
+ - main.py
+ 
+ 
+ 

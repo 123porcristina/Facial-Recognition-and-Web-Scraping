@@ -6,8 +6,8 @@ import imutils
 import pickle
 import time
 import cv2
-# import Insta_Info_Scraper as scraper
-from Prueba import Insta_Info_Scraper as scraper
+import Insta_Info_Scraper as scraper
+#from Prueba import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -337,4 +337,4 @@ def displayLoadTrain(btn2):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
