@@ -6,8 +6,8 @@ import imutils
 import pickle
 import time
 import cv2
-# import Insta_Info_Scraper as scraper
-from Prueba import Insta_Info_Scraper as scraper
+import Insta_Info_Scraper as scraper
+#from Prueba import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -173,153 +173,89 @@ app.layout = html.Div(
             ],
         ),
 
-        ############################################################
-
-        html.Div(id='circos-control-tabs', className='control-tabs', children=[
-            dcc.Tabs(id='circos-tabs', value='what-is', children=[
-                dcc.Tab(
-                    label='About',
-                    value='what-is', className='control-tab',
-                    children=html.Div(className='control-tab', children=[
-                        html.Div(className='content', children=[
-
-
-                            html.H4(className='what-is', children="What is Facial Recognition?"),
-
-                            html.P('At a basic level, facial recognition works by obtaining '
-                                   'geometry by scanning the face and recognizing patterns  '
-                                   'such as the distance between eyes, the size of the nose '
-                                   'and mouth, and so on. With that information, ', ),
-                            html.P('the computer can create a virtual map of the face and is '
-                                   'then able to perform a match against other faces to identify '
-                                   'the appearance of the person who is being captured through a '
-                                   'a camera or a digital image (Bala & Watney, 2019). '),
-                            html.P('Nowadays, facial recognition has become a subject of great '
-                                   'importance in various fields.  For example, it is used in '
-                                   'law enforcement to identify criminals, in social media to '
-                                   'to recognize friends, in technology to drive cars without a '
-                                   'driver, and in smart devices to unlock the device with just '
-                                   'the look of the face.'),
-                            html.P('Given all these fascinating applications, we are interested '
-                                   'to understand how this technology works by using facial '
-                                   'recognition in real time and implementing web scraping '
-                                   'to obtain basic information about Instagram users accounts '
-                                   'and to present such information on the facial recognition.'),
-                            html.P('In the "Data" tab, you can opt to use capture an image; '
-                                   'Train the algorithm or initiate the facial recognition.'
-                                   'It is worth to clarify that if you want to perform '
-                                   'another task after the facial recogonition is started, it'
-                                   'would be necessary to stop the video by pressing "STOP VIDEO"'
-                                   'button.'),
-
-                            html.Div([
-                                'Reference: ',
-                                html.A('TechTank paper',
-                                       href='https://www.brookings.edu/blog/techtank/2019/06/20/what-are-the-proper-limits-on-police-use-of-facial-recognition/)')
-                            ]),
-                            html.Div([
-                                'For a look into facial recognition and web scraping, please visit the '
-                                'original repository ',
-                                html.A('here', href='https://github.com/123porcristina/Final-Project-Group)'),
-                                '.'
-                            ]),
-
-                            html.Br()
-
-
-                        ]),
-                    ], )
-                ),
-
-                dcc.Tab(
-                    label='Data',
-                    value='data',
-                    children=html.Div(className='control-tab', children=[
-                        html.Div(className='app-controls-block', children=[
-                            html.Div(className='app-controls-name', children='Actions'),
-                            html.Hr(),
-
-                            html.Div(className="'app-controls-block'", children=[
-                                html.Button('Capture Picture', id='btn-1', className="control-download",
-                                            n_clicks_timestamp=0),
-                                html.Br(),
-                                html.Button('Train  Algorithm', id='btn-2',
-                                            n_clicks_timestamp=0),
-                                html.Br(),
-                                html.Button('Facial Recognition', id='btn-3',
-                                            n_clicks_timestamp=0),
-                                html.Br(),
-                                html.Button('Stop video', id='btn-4',  n_clicks_timestamp=0),
-                                html.Br(),
-                                html.Button('Haar', id='btn-5',  n_clicks_timestamp=0),
-                                html.Br(),
-                                html.Button('Gradient', id='btn-6',  n_clicks_timestamp=0),
-
-                                # html.Div(id='container-button-timestamp')
-
-                            ]),
-                        ]),
-                        html.Hr(),
-                    ])
-                ),
-
-                dcc.Tab(
-                    label='Graph',
-                    value='graph',
-                    children=html.Div(className='control-tab', children=[
-                        html.Div(className='app-controls-block', children=[
-                            html.Div(className='app-controls-name', children='Graph type'),
-                            dcc.Dropdown(
-                                id='circos-graph-type',
-                                options=[
-                                    {'label': graph_type.title(),
-                                     'value': graph_type} for graph_type in [
-                                        'heatmap',
-                                        'chords',
-                                        'highlight',
-                                        'histogram',
-                                        'line',
-                                        'scatter',
-                                        'stack',
-                                        'text',
-                                        'parser_data'
-                                    ]
-                                ],
-                                value='chords'
-                            ),
-                            html.Div(className='app-controls-desc', id='chords-text'),
-                        ]),
-                        html.Div(className='app-controls-block', children=[
-                            html.Div(className='app-controls-name', children='Graph size'),
-                            dcc.Slider(
-                                id='circos-size',
-                                min=500,
-                                max=800,
-                                step=10,
-                                value=650
-                            ),
-                        ]),
-                        html.Hr(),
-                        html.H5('Hover data'),
+        # Body of the App
+        html.Div(
+            className="row app-body",
+            children=[
+                # User Controls
+                html.Div(
+                    className="four columns card",
+                    children=[
                         html.Div(
-                            id='event-data-select'
-                        ),
+                            className="bg-white user-control",
+                            children=[
+                                html.Div(id='vp-control-tabs', className='control-tabs', children=[
+                                    dcc.Tabs(id='vp-tabs', value='what-is', children=[
+                                        dcc.Tab(
+                                            label='About',
+                                            value='what-is',
+                                            children=html.Div(className='control-tab', children=[
+                                                html.Br(),
+                                                html.H4(className='what-is', children='What is face recognition?'),
+                                                html.P(
 
-                    ]),
+                                                    'This project was created by Cristina Giraldo '
+                                                    'and Gregg Legarda. We created this project because'
+                                                    'we have curiosity about how computer vision works '
+                                                    'in the facial recognition area. '
+
+                                                ),
+                                                html.P(
+
+                                                    'In the "Data" tab, you can take a picture '
+                                                    'train the algorithm, and of course start the video '
+                                                    'to see how facial recognition works.'
+
+                                                ),
+                                                html.P(
+
+                                                    'The video takes some time to initialize so please '
+                                                    'be patient. '
+                                                )
+                                            ])
+                                        ),
+                                        dcc.Tab(
+                                            label='Data',
+                                            value='data',
+                                            children=html.Div(className='control-tab', children=[
+                                                html.Div(className='app-controls-block', children=[
+                                                    html.Div(className='app-controls-name',
+                                                             children='Actions: '
+                                                             ),
+
+                                                    html.Div([
+                                                        html.Button('Capture Picture', id='btn-1',
+                                                                    n_clicks_timestamp=0),
+                                                        html.Button('Train  Algorithm', id='btn-2',
+                                                                    n_clicks_timestamp=0),
+                                                        html.Button('Facial Recognition', id='btn-3',
+                                                                    n_clicks_timestamp=0),
+                                                        html.Button('Stop video', id='btn-4', n_clicks_timestamp=0),
+
+                                                        html.Button('Haar', id='btn-5', n_clicks_timestamp=0),
+                                                        html.Button('Gradient', id='btn-6', n_clicks_timestamp=0),
+
+                                                        html.Div(id='container-button-timestamp')
+
+                                                    ])
+
+                                                ])
+                                            ])
+                                        ),
+                                    ]),
+                                ]),
+                            ],
+                        )
+                    ],
                 ),
-            ])
-        ]),
-        ############################################################
-
                 # Graph
                 html.Div(
                     className="eight columns card-left",
                     children=[
-                        html.H5("Recognition"),
                         html.Div(
                             className="bg-white",
                             children=[
-                                # html.H5("Recognition"),
+                                html.H5("Recognition"),
                                 # dcc.Store(id='memory-output'),
                                 html.Div(id='output-video'),
                                 dcc.Loading(id="loading-1", children=[html.Div(id="loading-output-1")], type="default"),
@@ -329,33 +265,11 @@ app.layout = html.Div(
                     ],
                 ),
                 dcc.Store(id="error", storage_type="memory"),
-            # ],
-        # ),
+            ],
+        ),
     ]
 )
 
-# @app.callback(Output('output-video', 'children'),
-#               [Input('btn-1', 'n_clicks_timestamp'),
-#                Input('btn-2', 'n_clicks_timestamp'),
-#                Input('btn-3', 'n_clicks_timestamp')])
-# def displayClick(btn1, btn2, btn3):
-#     if int(btn1) > int(btn2) and int(btn1) > int(btn3):
-#         msg = 'Button 1 was most recently clicked'
-#     elif int(btn2) > int(btn1) and int(btn2) > int(btn3):
-#         # msg = 'Button 2 was most recently clicked'
-#         time.sleep(1)
-#         msg = 'Training has finished!'
-#         return html.Div([html.Div(msg)])
-#     elif int(btn3) > int(btn1) and int(btn3) > int(btn2):
-#         msg = 'Button 3 was most recently clicked'
-#         return html.Div([html.Div(html.Img(src="/video_feed"))])
-#     else:
-#         msg = 'None of the buttons have been clicked yet'
-#         return html.Div([])
-#
-
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
 
 image_count = 1
 
@@ -383,23 +297,25 @@ def displayClick(btn1, btn2, btn3, btn4):
         cv2.destroyAllWindows()
         del video_capture
         return None
-    # elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
-    #     msg = 'Button 2 was most recently clicked'
-        # print('Button 2 was most recently clicked')
+    elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
+        msg = 'Button 2 was most recently clicked'
+        print('Button 2 was most recently clicked')
         # time.sleep(1)
         # import encode_faces # calls the encoding when button train is pressed
-        # return html.Div([
-            #html.Div(msg),
-        # ])
+        return html.Div([
+            html.Div(msg),
+        ])
 
     elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4):  # button 3 - Recognition
     # elif int(btn3) > int(btn1) :#button 3 - Recognition
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
 
     elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3):
-        print("[INFO] Facial recognition has been STOPPED (button4: stop video pressed)")
+        print("button STOP was pressed")
+        # stop()
         cv2.destroyAllWindows()
-        return html.Div([html.Div(html.Img(src=" "))])
+        cv2.waitKey(1)
+        return html.Div([ html.Div(html.Img(src=" "))])
 
     else:
         msg = 'None of the buttons have been clicked yet'
@@ -421,4 +337,4 @@ def displayLoadTrain(btn2):
 
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)

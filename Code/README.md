@@ -1,4 +1,8 @@
 # Facial Recognition and Web Scraping
+Packages to import:
+•    Requirements for imports are OpenCV, Pillow, Pickle, Os, numpy glib, requests
+•    We used OpenCV features to help with this project
+
 
 Before to execute this project it is necessary to install:
 
@@ -15,10 +19,10 @@ To visualize the application is necessary install core dash backend and DAQ comp
 STEPS TO RUN THE MODEL
 
 1. Encode_faces.py:
-    - When this file is ran, it will perform the facial encoding
+    - Run this file to perform training and encoding of the images in the dataset folder
  
 2. Main.py: 
-   - When this file is ran, it will run the main screen. The code in this screen contains the web information.
+   - Run this file to get the https server. Copy and paste this address to a Chrome browser.
 
 3. Once in the screen, it will present the following information:
 
@@ -32,4 +36,15 @@ STEPS TO RUN THE MODEL
     
     Note: After initialize facial recognition if you want to push another button please press "STOP VIDEO".
          
+ Folders Outline:
+ - data set
+ -names of insta account, and photos 
+ 
+ - encode_faces.py
+ - encodingss.pickle
+ - Insta_Info_scraper.py
+ - users.txt
+ - main.py
+ 
+ 
  
