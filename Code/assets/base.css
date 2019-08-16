@@ -27,6 +27,7 @@
 
 /* This was actually not quite right -
    dropdowns were overlapping each other (edited October 26)
+
 .Select {
     z-index: 1002;
 }*/
@@ -173,104 +174,28 @@ a:hover {
 
 /* Buttons
 –––––––––––––––––––––––––––––––––––––––––––––––––– */
+.button,
 button,
 input[type="submit"],
 input[type="reset"],
 input[type="button"] {
-  margin-left: 9%;
+  display: inline-block;
   height: 38px;
-  width: 140px;
-  padding: 0;
-  color: rgb(42, 209, 209);
+  padding: 0 30px;
+  color: #555;
   text-align: center;
   font-size: 11px;
-  font-family: "Geneva", "Tahoma", "Verdana", "sans-serif";
-  font-weight: normal !important;
-  letter-spacing: .1rem;
-  text-transform: uppercase;
-  text-decoration: none;
-  white-space: nowrap;
-  background-color: #4181FF;
-  cursor: pointer;
-  box-sizing: border-box;
-  border-radius: 2px;
-
-}
-
-
-.button_instruction,
-input[type="submit"],
-input[type="reset"],
-input[type="button"] {
-  margin-left: 9%;
-  height: 34px;
-  width: 100px;
-  padding-bottom: 10px;
-  color: white;
-  text-align: center;
-  font-size: 9px;
-  font-family: "Geneva", "Tahoma", "Verdana", "sans-serif";
-  font-weight: 200;
+  font-weight: 600;
   line-height: 38px;
   letter-spacing: .1rem;
   text-transform: uppercase;
   text-decoration: none;
   white-space: nowrap;
-  background-color: #4181FF;
+  background-color: transparent;
+  border-radius: 4px;
+  border: 1px solid #bbb;
   cursor: pointer;
-  box-sizing: border-box;
-  border-radius: 2px;
-  border:transparent !important;
-}
-
-.demo_button{
-  margin-left: 4%;
-  height: 34px;
-  width: 140px;
-  padding-bottom: 10px;
-  color: white;
-  text-align: center;
-  font-size: 9px;
-  font-family: "Geneva", "Tahoma", "Verdana", "sans-serif";
-  font-weight: 200;
-  line-height: 38px;
-  letter-spacing: .1rem;
-  text-transform: uppercase;
-  text-decoration: none;
-  white-space: nowrap;
-  background-color: turquoise;
-  cursor: pointer;
-  box-sizing: border-box;
-  border-radius: 2px;
-  border: transparent !important;
-
-}
-
-
-.button_submit {
-  margin-left: 9%;
-  height: 38px;
-  width: 110px;
-  padding: 0;
-  color: white;
-  text-align: center;
-  font-size: 9px;
-  font-family: "Geneva", "Tahoma", "Verdana", "sans-serif";
-  font-weight: 200;
-  line-height: 38px;
-  letter-spacing: .1rem;
-  text-transform: uppercase;
-  text-decoration: none;
-  white-space: nowrap;
-  background-color: #4181FF;
-  cursor: pointer;
-  box-sizing: border-box;
-  border:transparent !important;
-  margin-bottom: 35px;
-}
-
-
-
+  box-sizing: border-box; }
 .button:hover,
 button:hover,
 input[type="submit"]:hover,
@@ -282,13 +207,16 @@ input[type="submit"]:focus,
 input[type="reset"]:focus,
 input[type="button"]:focus {
   color: #333;
-  outline: 0;
-}
-
-
-
-
-
+  border-color: #888;
+  outline: 0; }
+.button.button-primary,
+button.button-primary,
+input[type="submit"].button-primary,
+input[type="reset"].button-primary,
+input[type="button"].button-primary {
+  color: #FFF;
+  background-color: #33C3F0;
+  border-color: #33C3F0; }
 .button.button-primary:hover,
 button.button-primary:hover,
 input[type="submit"].button-primary:hover,
@@ -301,17 +229,7 @@ input[type="reset"].button-primary:focus,
 input[type="button"].button-primary:focus {
   color: #FFF;
   background-color: #1EAEDB;
-  border-color: #1EAEDB;
-}
-
-
-
-#tabs-content-example>div>div,
-.lower-canvas,
-.upper-canvas,
-.canvas-container {
-    width: 65vw !important;
-}
+  border-color: #1EAEDB; }
 
 
 /* Forms
