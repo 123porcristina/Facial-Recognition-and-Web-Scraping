@@ -6,14 +6,15 @@ import imutils
 import pickle
 import time
 import cv2
-from Code import Insta_Info_Scraper as scraper
-# import Insta_Info_Scraper as scraper
-# from Prueba import Insta_Info_Scraper as scraper
+#from Code import Insta_Info_Scraper as scraper
+import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+from haar.faces import VideoCamera2
+from haar import faces
 
 from flask import Flask, Response
 import os
@@ -157,7 +158,7 @@ app = dash.Dash(__name__, server=server)
 
 @server.route('/video_feed')
 def video_feed():
-    return Response(gen(VideoCamera()),
+    return Response(gen(VideoCamera2()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 # def stop():
 #     return VideoCamera.release(0)
@@ -414,7 +415,7 @@ def displayLoadTrain(btn2):
         # print('Button 2 was most recently clicked')
         time.sleep(1)
         from Code import encode_faces
-        # from Prueba import encode_faces # calls the encoding when button train is pressed
+        import encode_faces # calls the encoding when button train is pressed
         msg = 'Training has finished!'
         return html.Div([
             html.Div(msg),
