@@ -6,7 +6,7 @@ import pickle
 
 
 
-cascPath = "cascades/haarcascade_frontalface_default.xml"
+cascPath = "haar/cascades/haarcascade_frontalface_default.xml"
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -52,9 +52,9 @@ for root, dirs, files in os.walk(image_dir):
 #print(y_labels)
 #print(x_train)
 
-with open("labels.pickle","wb") as f:
+with open("haar/labels.pickle","wb") as f:
     pickle.dump(label_ids,f) #save the label ids in a file
 
 recognizer.train(x_train, np.array(y_labels))
-recognizer.save("trainer.yml")
+recognizer.save("haar/trainer.yml")
 print("\n \"face-train.py\" successful")

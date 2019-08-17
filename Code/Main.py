@@ -350,7 +350,7 @@ def displayLoadTrain(btn2,btn4,btn6):
         # calls the encoding on both algorithms when button train is pressed
         #from Code import encode_faces
         #from Code.haar import faces_train
-        #from haar import faces_train
+        from haar import faces_train
         from hog import encode_faces 
         image_filename = "training_image.png" 
         encoded_image = base64.b64encode(open(image_filename, 'rb').read())
