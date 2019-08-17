@@ -150,6 +150,10 @@ app.layout = html.Div(
                             html.Hr(),
 
                             html.Div(className="'app-controls-block'", children=[
+                                dcc.Input(id='input-box', placeholder='Instagram user...', type='text',
+                                          className="control-download"),
+                                html.Br(),
+                                html.Br(),
                                 html.Button('Capture Image', id='btn-1', className="control-download",
                                             n_clicks_timestamp=0),
                                 html.Br(),
@@ -281,6 +285,15 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6):
     global image_count
 
     if int(btn1) > int(btn3) and int(btn1) > int(btn4) and int(btn1) > int(btn5) and int(btn1) > int(btn6):   #btn 1 Capture 1mage
+        #Cristina added:
+        # # capture faces and save for training
+        # print("button CAPTURE was pressed")
+        # img = cp.CaptureImage(value, image_count)
+        # print(img.create_dir())
+        # msg = img.save_img()
+        # return msg
+
+
         # capture faces and save for training
         print("button CAPTURE was pressed")
         video_capture = cv2.VideoCapture(0)
