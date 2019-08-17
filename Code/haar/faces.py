@@ -5,6 +5,7 @@ import numpy as np
 #import Insta_Info_Scraper as scraper
 from haar import Insta_Info_Scraper as scraper
 
+
 # scraper
 font = cv2.FONT_HERSHEY_SIMPLEX
 color = (255, 255, 255)
@@ -90,7 +91,7 @@ class VideoCamera2(object):
                     obj.main(frame, x, h, y, conf, w, name)
                     
             ###############################
-            #frame = cropped ##gradient vector mode
+            #frame = cropped ##gradient vector mode shows on cam
             ret, jpeg = cv2.imencode('.jpg', frame)
             return jpeg.tobytes()
 
