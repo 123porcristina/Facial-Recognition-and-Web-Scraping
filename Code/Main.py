@@ -15,6 +15,7 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+import base64
 
 #face recognition algorithms
 from hog.hog import VideoCamera1
@@ -164,7 +165,7 @@ app.layout = html.Div(
                                 html.Br(),
                                 html.Button('HAAR Webcam', id='btn-5',  n_clicks_timestamp=0),
                                 html.Br(),
-                                html.Button('Gradient', id='btn-6',  n_clicks_timestamp=0),
+                                html.Button('Gradient Demo', id='btn-6',  n_clicks_timestamp=0),
 
                                 # html.Div(id='container-button-timestamp')
 
@@ -273,11 +274,12 @@ image_count = 1
 
 @app.callback(Output('output-video', 'children'),
               [Input('btn-1', 'n_clicks_timestamp'),
+               Input('btn-2', 'n_clicks_timestamp'),
                Input('btn-3', 'n_clicks_timestamp'),
                Input('btn-4', 'n_clicks_timestamp'),
                Input('btn-5', 'n_clicks_timestamp'),
                Input('btn-6', 'n_clicks_timestamp')])
-def displayClick(btn1, btn3, btn4, btn5, btn6):
+def displayClick(btn1, btn2, btn3, btn4, btn5, btn6):
     global image_count
 
     if int(btn1) > int(btn3) and int(btn1) > int(btn4) and int(btn1) > int(btn5) and int(btn1) > int(btn6):   #btn 1 Capture 1mage
@@ -292,9 +294,17 @@ def displayClick(btn1, btn3, btn4, btn5, btn6):
         video_capture.release()
         cv2.destroyAllWindows()
         del video_capture
+
+        ###to view the rgulr webcam feed###
         global algorithm
-        algorithm = VideoCamera()#for normal cam
+        algorithm = VideoCamera()#for hog
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
+
+        
+        #####to view the images saved on the screen
+        #image_filename = "saved_images/face" + str(image_count) + ".jpg" 
+        #encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+        #return html.Div([html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
 
 
 
@@ -304,10 +314,14 @@ def displayClick(btn1, btn3, btn4, btn5, btn6):
         algorithm = VideoCamera1()#for hog
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
 
-    elif int(btn4) > int(btn1) and int(btn4) > int(btn3) and int(btn4) > int(btn5) and int(btn4) > int(btn6): #btn 4 - stop video
+    elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3) and int(btn4) > int(btn5) and int(btn4) > int(btn6): #btn 4 - stop video
         print("[INFO] Facial recognition has been STOPPED (button4: stop video pressed)")
         cv2.destroyAllWindows()
-        return html.Div([html.Div(html.Img(src=" "))])
+
+        image_filename = 'stop_image.png' # replace with your own image
+        encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+        
+        return html.Div([html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
 
     elif int(btn5) > int(btn1)  and int(btn5) > int(btn3) and int(btn5) > int(btn4) and int(btn5) > int(btn6):     #btn 5 - HAAR
         cv2.destroyAllWindows()
@@ -317,7 +331,7 @@ def displayClick(btn1, btn3, btn4, btn5, btn6):
     elif int(btn6) > int(btn1)  and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):   #btn 6 - gradient
         cv2.destroyAllWindows()
         #global algorithm
-        algorithm = VideoCamera3()#for haar
+        algorithm = VideoCamera3()#for hsaar
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
     else:
         msg = 'None of the buttons have been clicked yet'
@@ -327,9 +341,10 @@ def displayClick(btn1, btn3, btn4, btn5, btn6):
 
 @app.callback(Output('loading-output-1', 'children'),
               [Input('btn-2', 'n_clicks_timestamp'),
+               Input('btn-4', 'n_clicks_timestamp'),
                Input('btn-6', 'n_clicks_timestamp')])
-def displayLoadTrain(btn2,btn6):                                                         
-    if  int(btn2) > int(btn6):         # button 2 train
+def displayLoadTrain(btn2,btn4,btn6):                                                         
+    if  int(btn2) > int(btn6) and int(btn2) > int(btn4) :         # button 2 train
 
         cv2.destroyAllWindows()
         # calls the encoding on both algorithms when button train is pressed
@@ -337,10 +352,9 @@ def displayLoadTrain(btn2,btn6):
         #from Code.haar import faces_train
         #from haar import faces_train
         from hog import encode_faces 
-        msg = 'Training has finished!'
-        return html.Div([
-            html.Div(msg),
-        ])
+        image_filename = "training_image.png" 
+        encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+        return html.Div([html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
 
 
     else:
