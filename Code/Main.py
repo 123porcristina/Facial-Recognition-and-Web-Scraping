@@ -43,6 +43,7 @@ ap.add_argument("-d", "--detection-method", type=str, default="hog",
 args = vars(ap.parse_args())
 
 
+
 writer = None
 
 """allows to turn of the light of the cam"""
