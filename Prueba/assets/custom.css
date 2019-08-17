@@ -1,0 +1,195 @@
+/*Fonts ––––––––––––––––––––––––––––––––––––––––––––––––––*/
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+body{
+  margin: 0px;
+  padding: 0px;
+  background-color: #1F2132;/* or we can change this one for white-all the background*/
+  /*background-color: white;*/
+  font-family: 'Open Sans';
+  text-align: justify;
+  color: #ffffff;
+  overflow-y: auto;
+}
+
+.study-browser-banner {
+  background: #262B3D;
+  color: white;
+  padding: 12px;
+  padding-left: 48px;
+}
+
+.div-logo{
+  display: inline-block;
+  float: right;
+}
+
+.logo{
+  height: 35px;
+  padding: 6px;
+  margin-top: 3px;
+}
+
+.h2-title, .h2-title-mobile{
+  font-family: 'Roboto';
+  display: inline-block;
+  letter-spacing: 3.8px;
+  font-weight: 800;
+  font-size: 20px;
+}
+
+.h2-title-mobile{
+  display: none;
+}
+
+h4.what-is {
+    font-weight: 400;
+    font-size: 20pt;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #ffffff;
+    overflow: auto;
+    overflow-y: auto;
+}
+
+
+
+h5, h6{
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 16px;
+  color: white;
+  /*color: #262B3D;*/
+}
+
+h5{
+  padding-left: 42px;
+}
+
+.alert {
+  padding: 20px;
+  background-color: #f44336;
+  color: white;
+}
+
+.bg-white{
+  background-color: #1F2132;
+  /*background-color: white;*/
+  padding: 24px 32px;
+  height: 500px;
+}
+
+.app-body{
+  margin-left: 4%;
+}
+
+.card{
+  padding:48px 24px 48px 24px;
+  margin-left: 4%;
+}
+
+.card-left{
+  padding:48px 24px 48px 24px;
+  margin-left: 0px;
+  overflow-y: auto;
+}
+
+.padding-top-bot{
+  padding-top: 12px;
+  padding-bottom: 18px;
+}
+
+.upload{
+  width: 100%;
+  line-height: 60px;
+  border-width: 1px;
+  border-style: dashed;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.upload p, .upload a {
+  display: inline;
+}
+
+.Select-control{
+  border: 1px solid #203cb3;
+}
+
+
+
+@media only screen and (max-width: 320px){
+  .Select-menu-outer, .Select-value{
+    font-size: 10.5px;
+  }
+  .upload{
+    padding: 5px;
+  }
+}
+
+/* mobile */
+@media only screen and (max-width: 768px) {
+  .upload{
+    line-height: 60px;
+    border-width: 1px;
+    border-style: dashed;
+    border-radius: 5px;
+    text-align: center;
+    font-size: small;
+  }
+
+  .columns{
+    width: 100%;
+  }
+
+  .card, .card-left{
+    padding: 24px;
+    margin: 0px;
+    /*overflow-y: scroll;*/
+  }
+
+  .bg-white{
+    height: auto;
+  }
+
+  .study-browser-banner{
+    padding-left: 24px;
+  }
+
+  .logo{
+    height: 28px;
+    padding-left:0px;
+    padding-bottom:0px;
+  }
+
+  .div-logo{
+    float: left;
+    display: block;
+    width: 100%;
+  }
+
+  .h2-title{
+    display:none;
+  }
+
+  .h2-title-mobile{
+    display:block;
+    float:left;
+  }
+
+  .app-body{
+    margin-left: 0px;
+  }
+
+  .four.columns                   { width: 100%; }
+  .eight.columns                  { width: 100%; }
+
+  .columns{
+    text-align: center;
+  }
+
+  .user-control{
+    padding-top: 24px;
+    padding-bottom: 24px;
+  }
+}
