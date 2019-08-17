@@ -367,14 +367,14 @@ image_count = 1
 
 @app.callback(Output('output-video', 'children'),
               [Input('btn-1', 'n_clicks_timestamp'),
-               Input('btn-2', 'n_clicks_timestamp'),
                Input('btn-3', 'n_clicks_timestamp'),
                Input('btn-4', 'n_clicks_timestamp'),
-               Input('btn-5', 'n_clicks_timestamp')])
-def displayClick(btn1, btn2, btn3, btn4, btn5):
+               Input('btn-5', 'n_clicks_timestamp'),
+               Input('btn-6', 'n_clicks_timestamp')])
+def displayClick(btn1, btn3, btn4, btn5, btn6):
     global image_count
 
-    if int(btn1) > int(btn2) and int(btn1) > int(btn3) and int(btn1) > int(btn4) and int(btn1) > int(btn5):   #btn 1 Capture 1mage
+    if int(btn1) > int(btn3) and int(btn1) > int(btn4) and int(btn1) > int(btn5) and int(btn1) > int(btn6):   #btn 1 Capture 1mage
         # capture faces and save for training
         print("button CAPTURE was pressed")
         video_capture = cv2.VideoCapture(0)
@@ -389,23 +389,27 @@ def displayClick(btn1, btn2, btn3, btn4, btn5):
         return None
 
 
-    elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4) and int(btn3) > int(btn5):  # button 3 - Recognition HOG
+    elif int(btn3) > int(btn1) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition HOG
         cv2.destroyAllWindows()
         global algorithm
         algorithm = VideoCamera()#for hog
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
 
-    elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3) and int(btn4) > int(btn5): #btn 4 - stop video
+    elif int(btn4) > int(btn1) and int(btn4) > int(btn3) and int(btn4) > int(btn5) and int(btn4) > int(btn6): #btn 4 - stop video
         print("[INFO] Facial recognition has been STOPPED (button4: stop video pressed)")
         cv2.destroyAllWindows()
         return html.Div([html.Div(html.Img(src=" "))])
 
-    elif int(btn5) > int(btn1) and int(btn5) > int(btn2) and int(btn5) > int(btn3) and int(btn5) > int(btn4):     #btn 5 - HAAR
+    elif int(btn5) > int(btn1)  and int(btn5) > int(btn3) and int(btn5) > int(btn4) and int(btn5) > int(btn6):     #btn 5 - HAAR
         cv2.destroyAllWindows()
         #global algorithm
         algorithm = VideoCamera2()#for haar
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
-
+    elif int(btn6) > int(btn1)  and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):   #btn 6 - gradient
+        cv2.destroyAllWindows()
+        #global algorithm
+        algorithm = VideoCamera3()#for haar
+        return html.Div([ html.Div(html.Img(src="/video_feed"))])
     else:
         msg = 'None of the buttons have been clicked yet'
         return html.Div([])
@@ -413,14 +417,10 @@ def displayClick(btn1, btn2, btn3, btn4, btn5):
 
 
 @app.callback(Output('loading-output-1', 'children'),
-              [Input('btn-1', 'n_clicks_timestamp'),
-               Input('btn-2', 'n_clicks_timestamp'),
-               Input('btn-3', 'n_clicks_timestamp'),
-               Input('btn-4', 'n_clicks_timestamp'),
-               Input('btn-5', 'n_clicks_timestamp'),
+              [Input('btn-2', 'n_clicks_timestamp'),
                Input('btn-6', 'n_clicks_timestamp')])
-def displayLoadTrain(btn1,btn2,btn3,btn4,btn5,btn6):                                                         
-    if int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4) and int(btn2) > int(btn5) and int(btn2) > int(btn6):         # button 2 train
+def displayLoadTrain(btn2,btn6):                                                         
+    if  int(btn2) > int(btn6):         # button 2 train
         # print('Button 2 was most recently clicked')
         from Code import encode_faces
         import encode_faces # calls the encoding when button train is pressed
@@ -428,11 +428,7 @@ def displayLoadTrain(btn1,btn2,btn3,btn4,btn5,btn6):
         return html.Div([
             html.Div(msg),
         ])
-    elif int(btn6) > int(btn1) and int(btn6) > int(btn2) and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):     #btn 6 - gradient
-        cv2.destroyAllWindows()
-        global algorithm
-        algorithm = VideoCamera3()#for haar
-        return html.Div([ html.Div(html.Img(src="/video_feed"))])
+
 
     else:
         msg = 'None of the buttons have been clicked yet'
