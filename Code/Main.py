@@ -17,8 +17,7 @@ from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
 import base64
 
-#face recognition algorithms
-from capture_image.capture_image import VideoCamera
+
 
 
 
@@ -54,7 +53,7 @@ def gen(camera):
         if args["display"] > 0:
             yield (b'--frame\r\n'
                    b'Content-Type: images/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
-algorithm = VideoCamera()
+algorithm = None
 
 def algotype():
     return algorithm 
@@ -296,6 +295,7 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6):
 
         # capture faces and save for training
         print("button CAPTURE was pressed")
+        
         video_capture = cv2.VideoCapture(0)
         time.sleep(2)
         ret, frame = video_capture.read()
@@ -305,6 +305,7 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6):
         video_capture.release()
         cv2.destroyAllWindows()
         del video_capture
+        from capture_image.capture_image import VideoCamera
 
         ###to view the rgulr webcam feed###
         global algorithm
