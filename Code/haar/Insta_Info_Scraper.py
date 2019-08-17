@@ -65,15 +65,15 @@ class Insta_Info_Scraper:
         # retrieves info from the dictionary according to the user
         dict_text = self.getinfo_dict(name)
 
-        cv2.putText(frame, 'User:' + dict_text['User'], (x, y + h + 15), self.font, self.size, self.color, self.stroke,
+        cv2.putText(frame, 'User:' + dict_text['User'], (x, y-60), self.font, self.size, self.color, self.stroke,
                     cv2.LINE_AA)
-        cv2.putText(frame, 'Followers:' + dict_text['Followers'], (x, y + h + 25), self.font, self.size, self.color,
+        cv2.putText(frame, 'Followers:' + dict_text['Followers'], (x, y -45 ), self.font, self.size, self.color,
                     self.stroke, cv2.LINE_AA)
-        cv2.putText(frame, 'Following:' + dict_text['Following'], (x, y + h + 35), self.font, self.size, self.color,
+        cv2.putText(frame, 'Following:' + dict_text['Following'], (x, y -30), self.font, self.size, self.color,
                     self.stroke, cv2.LINE_AA)
-        cv2.putText(frame, 'Posts:' + dict_text['Posts'], (x, y + h + 45), self.font, self.size, self.color,
+        cv2.putText(frame, 'Posts:' + dict_text['Posts'], (x, y -15), self.font, self.size, self.color,
                     self.stroke, cv2.LINE_AA)
-        cv2.putText(frame, "Confidence" + str(round(conf)) + "%", (x, y + h + 55), self.font, self.size, self.color,
+        cv2.putText(frame, "Confidence" + str(round(conf)) + "%", (x, y +h+15 ), self.font, self.size, self.color,
                     self.stroke,
                     cv2.LINE_AA)
         # cv2.rectangle(frame, (x, y), (x + w, y + h), self.color, 2)

@@ -41,7 +41,7 @@ data = pickle.loads(open("encodings.pickle", "rb").read())
 font = cv2.FONT_HERSHEY_SIMPLEX
 color = (255, 255, 255)
 stroke = 1
-size = 0.5
+size = 0.4
 obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 
 # initialize the video stream and pointer to output video file, then
@@ -421,9 +421,10 @@ def displayClick(btn1, btn3, btn4, btn5, btn6):
                Input('btn-6', 'n_clicks_timestamp')])
 def displayLoadTrain(btn2,btn6):                                                         
     if  int(btn2) > int(btn6):         # button 2 train
-        # print('Button 2 was most recently clicked')
-        from Code import encode_faces
-        import encode_faces # calls the encoding when button train is pressed
+        #from Code import encode_faces
+        #from Code.haar import faces_train
+        from haar import faces_train
+        import encode_faces # calls the encoding on both algorithms when button train is pressed
         msg = 'Training has finished!'
         return html.Div([
             html.Div(msg),
