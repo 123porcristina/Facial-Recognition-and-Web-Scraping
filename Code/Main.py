@@ -18,12 +18,9 @@ import dash_bootstrap_components as dbc
 import base64
 
 #face recognition algorithms
-from hog.hog import VideoCamera1
-from hog import hog
-from haar.faces import VideoCamera2
-from haar import faces
-from gradient.gradient import VideoCamera3
 from capture_image.capture_image import VideoCamera
+
+
 
 
 from flask import Flask, Response
@@ -312,6 +309,8 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6):
     elif int(btn3) > int(btn1) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition HOG
         cv2.destroyAllWindows()
         #global algorithm
+        from hog.hog import VideoCamera1
+        from hog import hog
         algorithm = VideoCamera1()#for hog
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
 
@@ -327,10 +326,13 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6):
     elif int(btn5) > int(btn1)  and int(btn5) > int(btn3) and int(btn5) > int(btn4) and int(btn5) > int(btn6):     #btn 5 - HAAR
         cv2.destroyAllWindows()
         #global algorithm
+        from haar.faces import VideoCamera2
+        from haar import faces
         algorithm = VideoCamera2()#for haar
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
     elif int(btn6) > int(btn1)  and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):   #btn 6 - gradient
         cv2.destroyAllWindows()
+        from gradient.gradient import VideoCamera3
         #global algorithm
         algorithm = VideoCamera3()#for hsaar
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
