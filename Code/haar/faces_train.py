@@ -9,8 +9,9 @@ import pickle
 cascPath = "cascades/haarcascade_frontalface_default.xml"
 
 
-#BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-#image_dir = os.path.join(BASE_DIR, "images")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+image_dir = os.path.join(BASE_DIR,"..", "dataset")#sister folder path
+
 
 faceCascade = cv2.CascadeClassifier(cascPath)
 recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -20,7 +21,7 @@ label_ids = {} #to create labels
 y_labels=[] # numbers related to the labels
 x_train = [] #contains pixel values
 
-for root, dirs, files in os.walk("/Users/gregglegarda/Desktop/Final-Project-Group/Code/dataset"):
+for root, dirs, files in os.walk(image_dir):
     for file in files:
         if file.endswith("png") or file.endswith("jpg"):
             path = os.path.join(root, file)

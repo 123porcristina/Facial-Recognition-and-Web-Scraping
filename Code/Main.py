@@ -6,16 +6,24 @@ import imutils
 import pickle
 import time
 import cv2
+
+#dash imports
 #from Code import Insta_Info_Scraper as scraper
-import Insta_Info_Scraper as scraper
+#import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 import dash_bootstrap_components as dbc
+
+#face recognition algorithms
+from hog.hog import VideoCamera1
+from hog import hog
 from haar.faces import VideoCamera2
-from gradient.gradient import VideoCamera3
 from haar import faces
+from gradient.gradient import VideoCamera3
+from capture_image.capture_image import VideoCamera
+
 
 from flask import Flask, Response
 import os
@@ -33,114 +41,12 @@ ap.add_argument("-d", "--detection-method", type=str, default="hog",
                 help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
 
-"""load the known faces and embeddings"""
-print("[INFO] loading encodings...")
-data = pickle.loads(open("encodings.pickle", "rb").read())
 
-"""scraper"""
-font = cv2.FONT_HERSHEY_SIMPLEX
-color = (255, 255, 255)
-stroke = 1
-size = 0.4
-obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
-
-# initialize the video stream and pointer to output video file, then
-# allow the camera sensor to warm up
-# print("[INFO] starting video stream...")
-# vs = VideoStream(src=0).start()
 writer = None
 
 """allows to turn of the light of the cam"""
 os.getenv("OPENCV_VIDEOIO_PRIORITY_MSMF", None)
 os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
-
-
-class VideoCamera(object):
-    def __init__(self):
-        self.video = cv2.VideoCapture(0)
-        print("[INFO] starting video stream...")
-
-    def __del__(self):
-        print("DEL fue ejecutado")
-        self.video.release()
-
-    # def release(self):
-    #     print("DEL fue ejecutado")
-    #     self.video.release()
-    #     cv2.destroyAllWindows()
-
-
-    def get_frame(self):
-        success, frame = self.video.read()
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        #####################################################
-        """convert the input frame from BGR to RGB then resize it to have
-        a width of 750px (to speedup processing)"""
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        rgb = imutils.resize(frame, width=750)
-        r = frame.shape[1] / float(rgb.shape[1])
-
-        """detect the (x, y)-coordinates of the bounding boxes
-        corresponding to each face in the input frame, then compute
-        the facial embeddings for each face"""
-        boxes = face_recognition.face_locations(rgb, model=args["detection_method"])
-        encodings = face_recognition.face_encodings(rgb, boxes)
-        names = []
-
-        """loop over the facial embeddings for face detection"""
-        for encoding in encodings:
-            # attempt to match each face in the input images to our known
-            # encodings
-            matches = face_recognition.compare_faces(data["encodings"], encoding)
-            name = "Unknown"
-
-            """check to see if we have found a match"""
-            if True in matches:
-                # find the indexes of all matched faces then initialize a
-                # dictionary to count the total number of times each face
-                # was matched
-                matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-                counts = {}
-
-                # loop over the matched indexes and maintain a count for
-                # each recognized face face
-                for i in matchedIdxs:
-                    name = data["names"][i]
-                    counts[name] = counts.get(name, 0) + 1
-
-                # determine the recognized face with the largest number
-                # of votes (note: in the event of an unlikely tie Python
-                # will select first entry in the dictionary)
-                name = max(counts, key=counts.get)
-            # update the list of names
-            names.append(name)
-
-        # loop over the recognized faces
-        for ((top, right, bottom, left), name) in zip(boxes, names):
-            # rescale the face coordinates
-            top = int(top * r)
-            right = int(right * r)
-            bottom = int(bottom * r)
-            left = int(left * r)
-
-            # draw rectangle
-            cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-            # saved = "images/face" + str(i) + ".jpg"
-            # cv2.imwrite(saved, frame)
-
-            # draw the predicted face name and instagram status on the images
-            # if username is recognized  from the camera, save the url in a text file
-            # to be pulled out later by a scraper
-            open('users.txt', 'w').close()  # clear5 it first
-            file1 = open("users.txt", "a")  # append mode
-            file1.write("https://www.instagram.com/" + name + "/")
-            file1.close()
-            obj.main(frame, top, left, right, bottom, name)
-
-        ###############################
-        ret, jpeg = cv2.imencode('.jpg', frame)
-        return jpeg.tobytes()
 
 
 def gen(camera):
@@ -380,19 +286,22 @@ def displayClick(btn1, btn3, btn4, btn5, btn6):
         video_capture = cv2.VideoCapture(0)
         time.sleep(2)
         ret, frame = video_capture.read()
-        saved = "images/face" + str(image_count) + ".jpg"
+        saved = "saved_images/face" + str(image_count) + ".jpg"
         cv2.imwrite(saved, frame)
         image_count = image_count+1
         video_capture.release()
         cv2.destroyAllWindows()
         del video_capture
-        return None
+        global algorithm
+        algorithm = VideoCamera()#for normal cam
+        return html.Div([ html.Div(html.Img(src="/video_feed"))])
+
 
 
     elif int(btn3) > int(btn1) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition HOG
         cv2.destroyAllWindows()
-        global algorithm
-        algorithm = VideoCamera()#for hog
+        #global algorithm
+        algorithm = VideoCamera1()#for hog
         return html.Div([ html.Div(html.Img(src="/video_feed"))])
 
     elif int(btn4) > int(btn1) and int(btn4) > int(btn3) and int(btn4) > int(btn5) and int(btn4) > int(btn6): #btn 4 - stop video
@@ -421,10 +330,13 @@ def displayClick(btn1, btn3, btn4, btn5, btn6):
                Input('btn-6', 'n_clicks_timestamp')])
 def displayLoadTrain(btn2,btn6):                                                         
     if  int(btn2) > int(btn6):         # button 2 train
+
+        cv2.destroyAllWindows()
+        # calls the encoding on both algorithms when button train is pressed
         #from Code import encode_faces
         #from Code.haar import faces_train
-        from haar import faces_train
-        import encode_faces # calls the encoding on both algorithms when button train is pressed
+        #from haar import faces_train
+        from hog import encode_faces 
         msg = 'Training has finished!'
         return html.Div([
             html.Div(msg),

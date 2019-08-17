@@ -1,7 +1,6 @@
 # Facial Recognition and Web Scraping
 Packages to import:
 •    Requirements for imports are OpenCV, Pillow, Pickle, Os, numpy glib, requests
-•    We used OpenCV features to help with this project
 
 
 Before to execute this project it is necessary to install:

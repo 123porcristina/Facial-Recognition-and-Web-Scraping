@@ -87,7 +87,7 @@ class Insta_Info_Scraper:
             self.ctx.check_hostname = False
             self.ctx.verify_mode = ssl.CERT_NONE
 
-            with open('users.txt') as f:
+            with open('haar/users.txt') as f:
                 self.content = f.readlines()
             self.content = [x.strip() for x in self.content]
             for url in self.content:
