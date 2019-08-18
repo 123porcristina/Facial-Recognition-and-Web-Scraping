@@ -7,7 +7,7 @@ class CaptureImage(object):
     def __init__(self, name, image_count):
         self.name = name
         self.image_count = image_count
-        self.path = 'images/'+str(self.name)+'/'
+        self.path = 'dataset/'+str(self.name)+'/'
 
     def create_dir(self):
         if os.path.exists(self.path):

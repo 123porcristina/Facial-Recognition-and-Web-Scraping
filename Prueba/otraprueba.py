@@ -6,19 +6,18 @@ import imutils
 import pickle
 import time
 import cv2
-from Code import Insta_Info_Scraper as scraper
+# from Code import Insta_Info_Scraper as scraper
 # import Insta_Info_Scraper as scraper
-# from Prueba import Insta_Info_Scraper as scraper
+from Prueba import Insta_Info_Scraper as scraper
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-import dash_bootstrap_components as dbc
-
+from Prueba import capture_image as cp
 from flask import Flask, Response
 import os
 from imutils.video import videostream
-import matplotlib.pyplot as plt
+
 import math
 
 """construct the argument parser and parse the arguments"""
@@ -85,37 +84,13 @@ class VideoCamera(object):
         """loop over the facial embeddings for face detection"""
         for encoding in encodings:
             # attempt to match each face in the input images to our known
-            # encodings
-            matches = face_recognition.compare_faces(data["encodings"], encoding)
+            matches = face_recognition.compare_faces(data["encodings"], encoding, tolerance=0.6)
             name = "Unknown"
 
             #  get distances and confidence levels
             face_distances = face_recognition.face_distance(encoding, data["encodings"])
             accuracy = self.get_accuracy(face_distances)
-            print("call metodo accuracy:"+str(accuracy))
-
-            # print("distances")
-            # print(face_distances)
-            # for i, face_distance in enumerate(face_distances):
-            #     print("The test image has a distance of {:.2} from known image #{}".format(face_distance, i))
-            #     print("- With a normal cutoff of 0.6, would the test image match the known image? {}".format(
-            #         face_distance < 0.6))
-            #     print("- With a very strict cutoff of 0.5, would the test image match the known image? {}".format(
-            #         face_distance < 0.5))
-            #     print()
-            #     print("ACCURACY")
-            #     print("face distance: " + str(face_distance))
-            #     face_match_threshold = 0.6
-            #     if face_distance > face_match_threshold:
-            #         range = (1.0 - face_match_threshold)
-            #         linear_val = (1.0 - face_distance) / (range * 2.0)
-            #         # return linear_val
-            #         print(linear_val)
-            #     else:
-            #         range = face_match_threshold
-            #         linear_val = 1.0 - (face_distance / (range * 2.0))
-            #         # return linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))
-            #         print(linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2)))
+            print("[INFO] Confidence Level: "+str(accuracy))
 
 
             """check to see if we have found a match"""
@@ -149,8 +124,6 @@ class VideoCamera(object):
 
             # draw a box around the face
             cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
-            # saved = "images/face" + str(i) + ".jpg"
-            # cv2.imwrite(saved, frame)
 
             # Get and draw info from instagram and user
             open('users.txt', 'w').close()  # clear5 it first
@@ -159,37 +132,20 @@ class VideoCamera(object):
             file1.close()
             obj.main(frame, top, left, right, bottom, name)
 
-        ###############################
         ret, jpeg = cv2.imencode('.jpg', frame)
         return jpeg.tobytes()
 
     def get_accuracy(self, face_distances, face_match_threshold=0.6):
-        # face_distances = face_recognition.face_distance(encoding, data["encodings"])
-        print("distances")
-        print(face_distances)
+        # print("distances: "+str(face_distances))
         for i, face_distance in enumerate(face_distances):
-            print("The test image has a distance of {:.2} from known image #{}".format(face_distance, i))
-            print("- With a normal cutoff of 0.6, would the test image match the known image? {}".format(
-                face_distance < 0.6))
-            print("- With a very strict cutoff of 0.5, would the test image match the known image? {}".format(
-                face_distance < 0.5))
-            print()
-            print("ACCURACY")
-            print("face distance: " + str(face_distance))
-            # face_match_threshold = 0.6
             if face_distance > face_match_threshold:
-                range = (1.0 - face_match_threshold)
-                linear_val = (1.0 - face_distance) / (range * 2.0)
-                # return linear_val
-                print(linear_val)
-                precition = linear_val
+                interval = (1.0 - face_match_threshold)
+                linear_val = (1.0 - face_distance) / (interval * 2.0)
+                return linear_val
             else:
-                range = face_match_threshold
-                linear_val = 1.0 - (face_distance / (range * 2.0))
-                # return linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))
-                print(linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2)))
-                precition = linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))
-            return precition
+                interval = face_match_threshold
+                linear_val = 1.0 - (face_distance / (interval * 2.0))
+                return linear_val + ((1.0 - linear_val) * math.pow((linear_val - 0.5) * 2, 0.2))
 
 
 def gen(camera):
@@ -203,15 +159,12 @@ def gen(camera):
 
 
 server = Flask(__name__)
-# app = dash.Dash(__name__, server=server,  external_stylesheets=[dbc.themes.BOOTSTRAP])
 app = dash.Dash(__name__, server=server)
 
 @server.route('/video_feed')
 def video_feed():
     return Response(gen(VideoCamera()),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
-# def stop():
-#     return VideoCamera.release(0)
 
 
 # App Layout
@@ -224,9 +177,7 @@ app.layout = html.Div(
                 html.H2(className="h2-title", children="FACIAL RECOGNITION & WEB SCRAPING"),
             ],
         ),
-
-        ############################################################
-
+        # Tabs
         html.Div(id='circos-control-tabs', className='control-tabs', children=[
             dcc.Tabs(id='circos-tabs', value='what-is', children=[
                 dcc.Tab(
@@ -292,6 +243,9 @@ app.layout = html.Div(
                             html.Hr(),
 
                             html.Div(className="'app-controls-block'", children=[
+                                dcc.Input(id='input-box', placeholder='Instagram user...', type='text', className="control-download"),
+                                html.Br(),
+                                html.Br(),
                                 html.Button('Capture Picture', id='btn-1', className="control-download",
                                             n_clicks_timestamp=0),
                                 html.Br(),
@@ -361,9 +315,7 @@ app.layout = html.Div(
                 ),
             ])
         ]),
-        ############################################################
-
-                # Graph
+                # show video
                 html.Div(
                     className="eight columns card-left",
                     children=[
@@ -375,39 +327,16 @@ app.layout = html.Div(
                                 # dcc.Store(id='memory-output'),
                                 html.Div(id='output-video'),
                                 dcc.Loading(id="loading-1", children=[html.Div(id="loading-output-1")], type="default"),
+                                # html.Div(id='msg-save-img', children='save image')
                                 # dcc.Graph(id="plot"),
                             ],
                         )
                     ],
                 ),
                 dcc.Store(id="error", storage_type="memory"),
-            # ],
-        # ),
     ]
 )
 
-# @app.callback(Output('output-video', 'children'),
-#               [Input('btn-1', 'n_clicks_timestamp'),
-#                Input('btn-2', 'n_clicks_timestamp'),
-#                Input('btn-3', 'n_clicks_timestamp')])
-# def displayClick(btn1, btn2, btn3):
-#     if int(btn1) > int(btn2) and int(btn1) > int(btn3):
-#         msg = 'Button 1 was most recently clicked'
-#     elif int(btn2) > int(btn1) and int(btn2) > int(btn3):
-#         # msg = 'Button 2 was most recently clicked'
-#         time.sleep(1)
-#         msg = 'Training has finished!'
-#         return html.Div([html.Div(msg)])
-#     elif int(btn3) > int(btn1) and int(btn3) > int(btn2):
-#         msg = 'Button 3 was most recently clicked'
-#         return html.Div([html.Div(html.Img(src="/video_feed"))])
-#     else:
-#         msg = 'None of the buttons have been clicked yet'
-#         return html.Div([])
-#
-
-# if __name__ == '__main__':
-#     app.run_server(debug=True)
 
 image_count = 1
 
@@ -416,25 +345,24 @@ image_count = 1
               [Input('btn-1', 'n_clicks_timestamp'),
                Input('btn-2', 'n_clicks_timestamp'),
                Input('btn-3', 'n_clicks_timestamp'),
-               Input('btn-4', 'n_clicks_timestamp')])
-def displayClick(btn1, btn2, btn3, btn4):
+               Input('btn-4', 'n_clicks_timestamp'),
+               Input('btn-5', 'n_clicks_timestamp'),
+               Input('btn-6', 'n_clicks_timestamp'),
+               Input('input-box', 'value')])
+def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
 # def displayClick(btn1, btn3):
     global image_count
 
-    if int(btn1) > int(btn2) and int(btn1) > int(btn3) and int(btn1) > int(btn4):
-    # if int(btn1) > int(btn3):
+    if int(btn1) > int(btn2) and int(btn1) > int(btn3) and int(btn1) > int(btn4) and int(btn1) > int(btn5) and int(btn1) > int(btn6):
         # capture faces and save for training
         print("button CAPTURE was pressed")
-        video_capture = cv2.VideoCapture(0)
-        time.sleep(2)
-        ret, frame = video_capture.read()
-        saved = "images/face" + str(image_count) + ".jpg"
-        cv2.imwrite(saved, frame)
-        image_count = image_count+1
-        video_capture.release()
-        cv2.destroyAllWindows()
-        del video_capture
-        return None
+        img = cp.CaptureImage(value, image_count)
+        print(img.create_dir())
+        msg = img.save_img()
+        # return html.Div([
+        #     html.Div(msg),
+        # ])
+        return msg
     # elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
     #     msg = 'Button 2 was most recently clicked'
         # print('Button 2 was most recently clicked')
@@ -444,18 +372,36 @@ def displayClick(btn1, btn2, btn3, btn4):
             #html.Div(msg),
         # ])
 
-    elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4):  # button 3 - Recognition
-    # elif int(btn3) > int(btn1) :#button 3 - Recognition
-        return html.Div([ html.Div(html.Img(src="/video_feed"))])
+    elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition
+        return html.Div([html.Div(html.Img(src="/video_feed"))])
 
-    elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3):
+    elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3) and int(btn4) > int(btn5) and int(btn4) > int(btn6):
         print("[INFO] Facial recognition has been STOPPED (button4: stop video pressed)")
         cv2.destroyAllWindows()
-        return html.Div([html.Div(html.Img(src=" "))])
+        return html.Div([html.Div(html.Img(src=" "),)])
+
+
+    elif int(btn5) > int(btn1) and int(btn5) > int(btn3) and int(btn5) > int(btn4) and int(btn5) > int(btn6):  # btn 5 - HAAR
+        print("[INFO] HAAR")
+        # from Prueba.Classify import faces
+        from Code.haar import faces as haar
+        hc = haar.VideoCamera2()
+        hc.get_frame()
+        return html.Div([html.Div(html.Img(src="/video_feed"))])
+
+    elif int(btn6) > int(btn1) and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):  # btn 5 - HAAR
+        print("[INFO] GRADIENT")
+        # from Prueba.Classify import faces
+        from Prueba import gradient as grad
+        gc = grad.VideoCamera3()
+        gc.get_frame()
+        return html.Div([html.Div(html.Img(src="/video_feed"))])
+
 
     else:
         msg = 'None of the buttons have been clicked yet'
         return html.Div([])
+
 
 
 @app.callback(Output('loading-output-1', 'children'),
@@ -464,13 +410,14 @@ def displayLoadTrain(btn2):
     if int(btn2):  # button 2 train
         # print('Button 2 was most recently clicked')
         time.sleep(1)
-        from Code import encode_faces
-        # from Prueba import encode_faces # calls the encoding when button train is pressed
+        # from Code.hog import encode_faces
+        # from Code import encode_faces
+        from Prueba import encode_faces
         msg = 'Training has finished!'
-        return html.Div([
-            html.Div(msg),
-        ])
-
+        # return html.Div([
+        #     html.Div(msg),
+        # ])
+        return msg
 
 
 if __name__ == '__main__':

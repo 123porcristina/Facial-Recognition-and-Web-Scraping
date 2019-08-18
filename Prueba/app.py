@@ -14,12 +14,12 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 from Prueba import capture_image as cp
-
 from flask import Flask, Response
 import os
 from imutils.video import videostream
 
 import math
+import numpy as np
 
 """construct the argument parser and parse the arguments"""
 ap = argparse.ArgumentParser()
@@ -56,85 +56,103 @@ os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
 
 
 class VideoCamera(object):
-    def __init__(self):
+    def __init__(self, vd_type):
         self.video = cv2.VideoCapture(0)
+        self.vd_type = vd_type ##
         print("[INFO] starting video stream...")
 
     def __del__(self):
         print("DEL fue ejecutado")
         self.video.release()
 
-
     def get_frame(self):
-        success, frame = self.video.read()
-        # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        print(self.vd_type)
+        if self.vd_type == 1:
+            print("entro al 1")
+            success, frame = self.video.read()
+            # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        """convert the input frame from BGR to RGB then resize it to have
-        a width of 750px (to speedup processing)"""
-        rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        rgb = imutils.resize(frame, width=750)
-        r = frame.shape[1] / float(rgb.shape[1])
+            """convert the input frame from BGR to RGB then resize it to have
+            a width of 750px (to speedup processing)"""
+            rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            rgb = imutils.resize(frame, width=750)
+            r = frame.shape[1] / float(rgb.shape[1])
 
-        """detect the (x, y)-coordinates of the bounding boxes
-        corresponding to each face in the input frame, then compute
-        the facial embeddings for each face"""
-        boxes = face_recognition.face_locations(rgb, model=args["detection_method"])
-        encodings = face_recognition.face_encodings(rgb, boxes)
-        names = []
+            """detect the (x, y)-coordinates of the bounding boxes
+            corresponding to each face in the input frame, then compute
+            the facial embeddings for each face"""
+            boxes = face_recognition.face_locations(rgb, model=args["detection_method"])
+            encodings = face_recognition.face_encodings(rgb, boxes)
+            names = []
 
-        """loop over the facial embeddings for face detection"""
-        for encoding in encodings:
-            # attempt to match each face in the input images to our known
-            matches = face_recognition.compare_faces(data["encodings"], encoding, tolerance=0.6)
-            name = "Unknown"
+            """loop over the facial embeddings for face detection"""
+            for encoding in encodings:
+                # attempt to match each face in the input images to our known
+                matches = face_recognition.compare_faces(data["encodings"], encoding, tolerance=0.6)
+                name = "Unknown"
 
-            #  get distances and confidence levels
-            face_distances = face_recognition.face_distance(encoding, data["encodings"])
-            accuracy = self.get_accuracy(face_distances)
-            print("[INFO] Confidence Level: "+str(accuracy))
+                #  get distances and confidence levels
+                face_distances = face_recognition.face_distance(encoding, data["encodings"])
+                accuracy = self.get_accuracy(face_distances)
+                print("[INFO] Confidence Level: "+str(accuracy))
 
 
-            """check to see if we have found a match"""
-            if True in matches:
-                # find the indexes of all matched faces then initialize a
-                # dictionary to count the total number of times each face
-                # was matched
-                matchedIdxs = [i for (i, b) in enumerate(matches) if b]
-                counts = {}
+                """check to see if we have found a match"""
+                if True in matches:
+                    # find the indexes of all matched faces then initialize a
+                    # dictionary to count the total number of times each face
+                    # was matched
+                    matchedIdxs = [i for (i, b) in enumerate(matches) if b]
+                    counts = {}
 
-                # loop over the matched indexes and maintain a count for
-                # each recognized face face
-                for i in matchedIdxs:
-                    name = data["names"][i]
-                    counts[name] = counts.get(name, 0) + 1
+                    # loop over the matched indexes and maintain a count for
+                    # each recognized face face
+                    for i in matchedIdxs:
+                        name = data["names"][i]
+                        counts[name] = counts.get(name, 0) + 1
 
-                # determine the recognized face with the largest number
-                # of votes (note: in the event of an unlikely tie Python
-                # will select first entry in the dictionary)
-                name = max(counts, key=counts.get)
-            # update the list of names
-            names.append(name)
+                    # determine the recognized face with the largest number
+                    # of votes (note: in the event of an unlikely tie Python
+                    # will select first entry in the dictionary)
+                    name = max(counts, key=counts.get)
+                # update the list of names
+                names.append(name)
 
-        # Show the results
-        for ((top, right, bottom, left), name) in zip(boxes, names):
-            # rescale the face coordinates
-            top = int(top * r)
-            right = int(right * r)
-            bottom = int(bottom * r)
-            left = int(left * r)
+            # Show the results
+            for ((top, right, bottom, left), name) in zip(boxes, names):
+                # rescale the face coordinates
+                top = int(top * r)
+                right = int(right * r)
+                bottom = int(bottom * r)
+                left = int(left * r)
 
-            # draw a box around the face
-            cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
+                # draw a box around the face
+                cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 2)
 
-            # Get and draw info from instagram and user
-            open('users.txt', 'w').close()  # clear5 it first
-            file1 = open("users.txt", "a")  # append mode
-            file1.write("https://www.instagram.com/" + name + "/")
-            file1.close()
-            obj.main(frame, top, left, right, bottom, name)
+                # Get and draw info from instagram and user
+                open('users.txt', 'w').close()  # clear5 it first
+                file1 = open("users.txt", "a")  # append mode
+                file1.write("https://www.instagram.com/" + name + "/")
+                file1.close()
+                obj.main(frame, top, left, right, bottom, name)
 
-        ret, jpeg = cv2.imencode('.jpg', frame)
-        return jpeg.tobytes()
+            ret, jpeg = cv2.imencode('.jpg', frame)
+            return jpeg.tobytes()
+
+        elif self.vd_type == 2:
+            while True:
+                # Capture frame-by-frame
+                ret, frame = self.video.read()
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                frame = frame.astype('uint8')
+                gx, gy = np.gradient(gray)
+                cropped = np.sqrt(np.square(gx) + np.square(gy))
+                frame = cropped  ##gradient vector mode
+                ret, jpeg = cv2.imencode('.jpg', frame)
+                # cv2.imshow('frame', frame)
+                # if cv2.waitKey(20) & 0xFF == ord('q'):
+                #     break
+                return jpeg.tobytes()
 
     def get_accuracy(self, face_distances, face_match_threshold=0.6):
         # print("distances: "+str(face_distances))
@@ -160,12 +178,11 @@ def gen(camera):
 
 
 server = Flask(__name__)
-# app = dash.Dash(__name__, server=server,  external_stylesheets=[dbc.themes.BOOTSTRAP])
 app = dash.Dash(__name__, server=server)
 
 @server.route('/video_feed')
 def video_feed():
-    return Response(gen(VideoCamera()),
+    return Response(gen(VideoCamera(vd)),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
 
@@ -354,6 +371,7 @@ image_count = 1
 def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
 # def displayClick(btn1, btn3):
     global image_count
+    global vd
 
     if int(btn1) > int(btn2) and int(btn1) > int(btn3) and int(btn1) > int(btn4) and int(btn1) > int(btn5) and int(btn1) > int(btn6):
         # capture faces and save for training
@@ -375,6 +393,7 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
         # ])
 
     elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition
+        vd = 1
         return html.Div([html.Div(html.Img(src="/video_feed"))])
 
     elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3) and int(btn4) > int(btn5) and int(btn4) > int(btn6):
@@ -390,6 +409,40 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
         hc = haar.VideoCamera2()
         hc.get_frame()
         return html.Div([html.Div(html.Img(src="/video_feed"))])
+
+    elif int(btn6) > int(btn1) and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):  # btn 5 - HAAR
+        print("[INFO] GRADIENT llamo al gradiente")
+        # from Prueba.Classify import faces
+        # from Prueba import gradient as grad
+        # gc = grad.VideoCamera3()
+        # gc.get_frame()
+        ##
+        # import  numpy as np
+        # video_capture = cv2.VideoCapture(0)
+        # time.sleep(2)
+        # ret, frame = video_capture.read()
+        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        # frame = frame.astype('uint8')
+        # gx, gy = np.gradient(gray)
+        # cropped = np.sqrt(np.square(gx) + np.square(gy))
+        # frame = cropped  ##gradient vector mode
+        # ret, jpeg = cv2.imencode('.jpg', frame)
+
+        # gen(VideoCamera(2))
+        print("llamo al video camera 2 no ha entrado a la clase")
+        vd = 2
+        gen(camera=vd)
+
+        # vd = VideoCamera(2)
+        # while True:
+        #     vd.get_frame()
+        return html.Div([html.Div(html.Img(src="/video_feed"))])
+
+
+
+
+
+        # return html.Div([html.Div(html.Img(src="/video_feed"))])
 
 
     else:
