@@ -8,16 +8,20 @@ import time
 import cv2
 # from Code import Insta_Info_Scraper as scraper
 # import Insta_Info_Scraper as scraper
-from Prueba import Insta_Info_Scraper as scraper
+
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-from Prueba import capture_image as cp
+
 from flask import Flask, Response
 import os
 from imutils.video import videostream
-from Prueba.haar import prueba_faces as haar
+from Prueba import Insta_Info_Scraper as scraper
+from Prueba import capture_image as cp
+from Prueba.haar import faces as haar
+from Prueba import encode_faces as ef
+from Prueba.haar import faces_train as train
 
 import math
 import numpy as np
@@ -34,9 +38,9 @@ ap.add_argument("-d", "--detection-method", type=str, default="hog",
                 help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
 
-"""load the known faces and embeddings"""
-print("[INFO] loading encodings...")
-data = pickle.loads(open("encodings.pickle", "rb").read())
+# """load the known faces and embeddings"""
+# print("[INFO] loading encodings...")
+# data = pickle.loads(open("encodings.pickle", "rb").read())
 
 """scraper"""
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -45,9 +49,7 @@ stroke = 1
 size = 0.5
 obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 
-# initialize the video stream and pointer to output video file, then
-# allow the camera sensor to warm up
-# print("[INFO] starting video stream...")
+
 # vs = VideoStream(src=0).start()
 writer = None
 
@@ -58,18 +60,19 @@ os.environ["OPENCV_VIDEOIO_PRIORITY_MSMF"] = "0"
 
 class VideoCamera(object):
     def __init__(self, vd_type):
-        self.video = cv2.VideoCapture(0)
-        self.vd_type = vd_type ##
         print("[INFO] starting video stream...")
+        self.video = cv2.VideoCapture(0)
+        self.vd_type = vd_type
 
     def __del__(self):
         print("DEL fue ejecutado")
         self.video.release()
 
     def get_frame(self):
-        print(self.vd_type)
-        if self.vd_type == 1:
-            print("entro al 1")
+
+        if self.vd_type == 1: #HOG
+            print("[INFO] loading encodings...")
+            data = pickle.loads(open("encodings.pickle", "rb").read())  ##
             success, frame = self.video.read()
             # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -135,27 +138,25 @@ class VideoCamera(object):
                 file1 = open("users.txt", "a")  # append mode
                 file1.write("https://www.instagram.com/" + name + "/")
                 file1.close()
-                obj.main(frame, top, left, right, bottom, name)
+                obj.main(frame, top, left, right, bottom, name, "")
 
             ret, jpeg = cv2.imencode('.jpg', frame)
             return jpeg.tobytes()
 
-        elif self.vd_type == 2:
+        elif self.vd_type == 2: #gradient
             while True:
-                # Capture frame-by-frame
                 ret, frame = self.video.read()
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 frame = frame.astype('uint8')
                 gx, gy = np.gradient(gray)
                 cropped = np.sqrt(np.square(gx) + np.square(gy))
-                frame = cropped  ##gradient vector mode
+                frame = cropped
                 ret, jpeg = cv2.imencode('.jpg', frame)
                 return jpeg.tobytes()
 
-        elif self.vd_type == 3:
-            a = haar.haar(self.video)
-            return a
-            # from Prueba.haar import prueba_faces as haar
+        elif self.vd_type == 3: #haar
+            return haar.haar(self.video)
+
 
 
     def get_accuracy(self, face_distances, face_match_threshold=0.6):
@@ -264,8 +265,8 @@ app.layout = html.Div(
                         html.Div(className='app-controls-block', children=[
                             html.Div(className='app-controls-name', children='Actions'),
                             html.Hr(),
-
                             html.Div(className="'app-controls-block'", children=[
+                                html.Label("Directory name *"),
                                 dcc.Input(id='input-box', placeholder='Instagram user...', type='text', className="control-download"),
                                 html.Br(),
                                 html.Br(),
@@ -292,50 +293,50 @@ app.layout = html.Div(
                     ])
                 ),
 
-                dcc.Tab(
-                    label='Graph',
-                    value='graph',
-                    children=html.Div(className='control-tab', children=[
-                        html.Div(className='app-controls-block', children=[
-                            html.Div(className='app-controls-name', children='Graph type'),
-                            dcc.Dropdown(
-                                id='circos-graph-type',
-                                options=[
-                                    {'label': graph_type.title(),
-                                     'value': graph_type} for graph_type in [
-                                        'heatmap',
-                                        'chords',
-                                        'highlight',
-                                        'histogram',
-                                        'line',
-                                        'scatter',
-                                        'stack',
-                                        'text',
-                                        'parser_data'
-                                    ]
-                                ],
-                                value='chords'
-                            ),
-                            html.Div(className='app-controls-desc', id='chords-text'),
-                        ]),
-                        html.Div(className='app-controls-block', children=[
-                            html.Div(className='app-controls-name', children='Graph size'),
-                            dcc.Slider(
-                                id='circos-size',
-                                min=500,
-                                max=800,
-                                step=10,
-                                value=650
-                            ),
-                        ]),
-                        html.Hr(),
-                        html.H5('Hover data'),
-                        html.Div(
-                            id='event-data-select'
-                        ),
-
-                    ]),
-                ),
+                # dcc.Tab(
+                #     label='Graph',
+                #     value='graph',
+                #     children=html.Div(className='control-tab', children=[
+                #         html.Div(className='app-controls-block', children=[
+                #             html.Div(className='app-controls-name', children='Graph type'),
+                #             dcc.Dropdown(
+                #                 id='circos-graph-type',
+                #                 options=[
+                #                     {'label': graph_type.title(),
+                #                      'value': graph_type} for graph_type in [
+                #                         'heatmap',
+                #                         'chords',
+                #                         'highlight',
+                #                         'histogram',
+                #                         'line',
+                #                         'scatter',
+                #                         'stack',
+                #                         'text',
+                #                         'parser_data'
+                #                     ]
+                #                 ],
+                #                 value='chords'
+                #             ),
+                #             html.Div(className='app-controls-desc', id='chords-text'),
+                #         ]),
+                #         html.Div(className='app-controls-block', children=[
+                #             html.Div(className='app-controls-name', children='Graph size'),
+                #             dcc.Slider(
+                #                 id='circos-size',
+                #                 min=500,
+                #                 max=800,
+                #                 step=10,
+                #                 value=650
+                #             ),
+                #         ]),
+                #         html.Hr(),
+                #         html.H5('Hover data'),
+                #         html.Div(
+                #             id='event-data-select'
+                #         ),
+                #
+                #     ]),
+                # ),
             ])
         ]),
                 # show video
@@ -346,12 +347,9 @@ app.layout = html.Div(
                         html.Div(
                             className="bg-white",
                             children=[
-                                # html.H5("Recognition"),
                                 # dcc.Store(id='memory-output'),
                                 html.Div(id='output-video'),
                                 dcc.Loading(id="loading-1", children=[html.Div(id="loading-output-1")], type="default"),
-                                # html.Div(id='msg-save-img', children='save image')
-                                # dcc.Graph(id="plot"),
                             ],
                         )
                     ],
@@ -373,7 +371,7 @@ image_count = 1
                Input('btn-6', 'n_clicks_timestamp'),
                Input('input-box', 'value')])
 def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
-# def displayClick(btn1, btn3):
+
     global image_count
     global vd
 
@@ -383,18 +381,10 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
         img = cp.CaptureImage(value, image_count)
         print(img.create_dir())
         msg = img.save_img()
-        # return html.Div([
-        #     html.Div(msg),
-        # ])
         return msg
     # elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
     #     msg = 'Button 2 was most recently clicked'
-        # print('Button 2 was most recently clicked')
-        # time.sleep(1)
-        # import encode_faces # calls the encoding when button train is pressed
-        # return html.Div([
-            #html.Div(msg),
-        # ])
+        # return html.Div([html.Div(msg),])
 
     elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition
         vd = 1
@@ -408,53 +398,19 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
 
     elif int(btn5) > int(btn1) and int(btn5) > int(btn3) and int(btn5) > int(btn4) and int(btn5) > int(btn6):  # btn 5 - HAAR
         print("[INFO] HAAR")
-        # from Prueba.Classify import faces
-        # from Code.haar import faces as haar
-        # hc = haar.VideoCamera2()
-        # hc.get_frame()
         vd = 3
         gen(camera=vd)
         return html.Div([html.Div(html.Img(src="/video_feed"))])
 
     elif int(btn6) > int(btn1) and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):  # btn 5 - HAAR
-        print("[INFO] GRADIENT llamo al gradiente")
-        # from Prueba.Classify import faces
-        # from Prueba import gradient as grad
-        # gc = grad.VideoCamera3()
-        # gc.get_frame()
-        ##
-        # import  numpy as np
-        # video_capture = cv2.VideoCapture(0)
-        # time.sleep(2)
-        # ret, frame = video_capture.read()
-        # gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        # frame = frame.astype('uint8')
-        # gx, gy = np.gradient(gray)
-        # cropped = np.sqrt(np.square(gx) + np.square(gy))
-        # frame = cropped  ##gradient vector mode
-        # ret, jpeg = cv2.imencode('.jpg', frame)
-
-        # gen(VideoCamera(2))
-        print("llamo al video camera 2 no ha entrado a la clase")
+        print("[INFO] GRADIENT")
         vd = 2
         gen(camera=vd)
-
-        # vd = VideoCamera(2)
-        # while True:
-        #     vd.get_frame()
         return html.Div([html.Div(html.Img(src="/video_feed"))])
-
-
-
-
-
-        # return html.Div([html.Div(html.Img(src="/video_feed"))])
-
 
     else:
         msg = 'None of the buttons have been clicked yet'
         return html.Div([])
-
 
 
 @app.callback(Output('loading-output-1', 'children'),
@@ -463,13 +419,9 @@ def displayLoadTrain(btn2):
     if int(btn2):  # button 2 train
         # print('Button 2 was most recently clicked')
         time.sleep(1)
-        # from Code.hog import encode_faces
-        # from Code import encode_faces
-        from Prueba import encode_faces
+        ef.encoding()
+        train.faces_train()
         msg = 'Training has finished!'
-        # return html.Div([
-        #     html.Div(msg),
-        # ])
         return msg
 
 

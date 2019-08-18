@@ -12,14 +12,12 @@
 
 #circos-control-tabs {
     width: 400px;
-    height: 550px;
+    height: 572px;
     margin: 50px;
     margin-right: 0px;
     background-color: #262B3D !important;
     font-size: 10pt;
     float: left;
-    /*overflow-y: auto;*/
-    /*overflow: auto;*/
 }
 
 #circos-control-tabs::-webkit-scrollbar-thumb{
@@ -112,6 +110,24 @@ button:focus {
 
 ._dash-undo-redo {
   display: none;
+}
+
+  label {
+    /*margin-top: 15px;*/
+    color: #7CD3F7;
+    font-family: "Geneva", "Tahoma", "Verdana", "sans-serif";
+    text-align: left;
+    display: inherit;
+    margin-left: 0;
+    margin-bottom: 7px;
+  }
+
+input{
+
+    width: 100%;
+    text-align: left;
+
+   /* Awesome styling */
 }
 
 /*button:focus {*/

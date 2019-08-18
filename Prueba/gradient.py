@@ -1,9 +1,7 @@
 import cv2
-import sys
 import numpy as np
 
-# camera actions
-# print("inside gradiant")
+
 class VideoCamera3(object):
     def __init__(self):
         self.video = cv2.VideoCapture(0)
