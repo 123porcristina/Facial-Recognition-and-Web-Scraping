@@ -22,7 +22,7 @@ size = 0.4
 obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 
 # cascades
-cascPath = "haar/cascades/haarcascade_frontalface_default.xml"
+cascPath = "../haar/cascades/haarcascade_frontalface_default.xml"
 
 
 faceCascade = cv2.CascadeClassifier(cascPath)
@@ -30,11 +30,11 @@ faceCascade = cv2.CascadeClassifier(cascPath)
 
 # recognizer
 recognizer = cv2.face.LBPHFaceRecognizer_create()
-recognizer.read("haar/trainer.yml")
+recognizer.read("../haar/trainer.yml")
 
 # labels
 labels = {"person_name": 1}
-with open("haar/labels.pickle", 'rb') as f:
+with open("../haar/labels.pickle", 'rb') as f:
     og_labels = pickle.load(f)
     labels = {v: k for k, v in og_labels.items()}
 
@@ -90,15 +90,24 @@ class VideoCamera2(object):
 
                     # if username is recognized  from the camera, save the url in a text file
                     # to be pulled out later by a scraper
-                    open('haar/users.txt', 'w').close()  # clear it first
-                    file1 = open("haar/users.txt", "a")  # append mode
+                    open('../haar/users.txt', 'w').close()  # clear it first
+                    file1 = open("../haar/users.txt", "a")  # append mode
                     file1.write("https://www.instagram.com/" + name + "/")
                     file1.close()
                     obj.main(frame, x, h, y, conf, w, name)
-                    
+
+            cv2.imshow('frame', frame)
+            if cv2.waitKey(20) & 0xFF == ord('q'):
+                break
             ###############################
-            #frame = cropped ##gradient vector mode shows on cam
-            ret, jpeg = cv2.imencode('.jpg', frame)
-            return jpeg.tobytes()
+            # #frame = cropped ##gradient vector mode shows on cam
+            # ret, jpeg = cv2.imencode('.jpg', frame)
+            # return jpeg.tobytes()
 
 
+def main():
+    hc = VideoCamera2()
+    hc.get_frame()
+
+if __name__ == "__main__": # "Executed when invoked directly"
+    main()

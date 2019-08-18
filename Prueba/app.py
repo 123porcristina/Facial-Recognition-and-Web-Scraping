@@ -17,6 +17,7 @@ from Prueba import capture_image as cp
 from flask import Flask, Response
 import os
 from imutils.video import videostream
+from Prueba.haar import prueba_faces as haar
 
 import math
 import numpy as np
@@ -149,10 +150,13 @@ class VideoCamera(object):
                 cropped = np.sqrt(np.square(gx) + np.square(gy))
                 frame = cropped  ##gradient vector mode
                 ret, jpeg = cv2.imencode('.jpg', frame)
-                # cv2.imshow('frame', frame)
-                # if cv2.waitKey(20) & 0xFF == ord('q'):
-                #     break
                 return jpeg.tobytes()
+
+        elif self.vd_type == 3:
+            a = haar.haar(self.video)
+            return a
+            # from Prueba.haar import prueba_faces as haar
+
 
     def get_accuracy(self, face_distances, face_match_threshold=0.6):
         # print("distances: "+str(face_distances))
@@ -405,9 +409,11 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
     elif int(btn5) > int(btn1) and int(btn5) > int(btn3) and int(btn5) > int(btn4) and int(btn5) > int(btn6):  # btn 5 - HAAR
         print("[INFO] HAAR")
         # from Prueba.Classify import faces
-        from Code.haar import faces as haar
-        hc = haar.VideoCamera2()
-        hc.get_frame()
+        # from Code.haar import faces as haar
+        # hc = haar.VideoCamera2()
+        # hc.get_frame()
+        vd = 3
+        gen(camera=vd)
         return html.Div([html.Div(html.Img(src="/video_feed"))])
 
     elif int(btn6) > int(btn1) and int(btn6) > int(btn3) and int(btn6) > int(btn4) and int(btn6) > int(btn5):  # btn 5 - HAAR
