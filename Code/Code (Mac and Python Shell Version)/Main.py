@@ -22,8 +22,9 @@ from imutils.video import videostream
 import math
 import numpy as np
 
-#camera imports
-
+#training imports
+from haar import faces_train as ft
+from hog import encode_faces as ef
 
 
 """construct the argument parser and parse the arguments"""
@@ -323,8 +324,10 @@ def displayLoadTrain(btn1,btn2,btn3,btn4,btn5,btn6):
 
         cv2.destroyAllWindows()
         # calls the encoding on both algorithms when button train is pressed
-        from haar import faces_train
-        from hog import encode_faces 
+        #from haar import faces_train
+        #from hog import encode_faces
+        ef.encode()
+        ft.train()
         image_filename = "saved_images/training_image.png" 
         encoded_image = base64.b64encode(open(image_filename, 'rb').read())
         return html.Div([html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
