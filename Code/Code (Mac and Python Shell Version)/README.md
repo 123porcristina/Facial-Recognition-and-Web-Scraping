@@ -1,4 +1,8 @@
-# Facial Recognition and Web Scraping
+# Facial Recognition, Web Scraping, Dash and Plotly
+
+
+https://github.com/123porcristina
+https://gregglegarda.github.io/
 
 
 PACKAGE INSTALLATION REQUIREMENTS:
@@ -22,31 +26,31 @@ To visualize the application is necessary install core dash backend and DAQ comp
 - pip install dash-daq==0.1.0 
 
 
-FOLDERS OUTLINE:
+FOLDERS OUTLINE AND FILE DESCRIPTIONS:
 
 - Main.py (Main file to run)
 - README.md
 - assets
 - capture_image
-        - capture_image.py
+        - capture_image.py (File that captures and stores images in the corresponding instagram username folder.)
 - dataset (Contains folders of instagram usernames. These folders contains images)
 - gradient
-        - gradient.py
+        - gradient.py (Runs a video feed using gradient images)
 - haar
-        - cascades
-        - face_train.py
-        - faces.py
-        - insta_Info_Scraper.py
-        - labels.pickle
-        - trainer.yml
-        - users.txt
+        - cascades (Contains a face cascade file used in haar face detection)
+        - face_train.py (Trains the Haar cascade to recognize images from the dataset. Outputs "labels.pickle" and "trainer.yml")
+        - faces.py (Runs the trained Haar video feed)
+        - Insta_Info_Scraper.py (Pulls and shows the instagram users information to be attached to the Haar video feed)
+        - labels.pickle (labels IDs matching names and the corresponding images and saves it in trainer.yml)
+        - trainer.yml (output of "labels.pickle" to be used as input when it runs "faces.py".)
+        - users.txt (used by "Insta_Info_Scraper.py" to pull the instagram address of the user which is the name of the folder. This file is created by "faces.py" by reading the name of the folder which also has the instagram username )
 - hog
-        - encode_faces.py
-        - encodings.pickle
-        - hog.py
-        - Insta_Info_Scraper.py
-        - users.txt
-- saved_images
+        - encode_faces.py (Trains the HOG algorithm to recognize images from the dataset. Outputs "encodings.pickle")
+        - encodings.pickle (contains the encoded/trained information of the faces used when the dataset is encoded/trained)
+        - hog.py (Runs the trained HOG video feed)
+        - Insta_Info_Scraper.py (Pulls and shows the instagram users information to be attached to the HOG video feed)
+        - users.txt (used by "Insta_Info_Scraper.py" to pull the instagram address of the user which is the name of the folder. This file is created by "hog.py" by reading the name of the folder which also has the instagram username )
+- saved_images (Contains images used for the  user interface.)
         - image_captured
         - stop_image.png
         - training_image.png
