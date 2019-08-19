@@ -11,6 +11,7 @@ import numpy as np
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import base64
 from dash.dependencies import Input, Output
 from flask import Flask, Response
 from Code.web_scraper import Insta_Info_Scraper as scraper
@@ -61,6 +62,13 @@ class VideoCamera(object):
     def get_frame(self):
 
         if self.vd_type == 1: #HOG
+            # """scraper"""
+            # font = cv2.FONT_HERSHEY_SIMPLEX
+            # color = (255, 255, 255)
+            # stroke = 1
+            # size = 0.5
+            # obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
+
             print("[INFO] loading encodings...")
             data = pickle.loads(open("./encodings.pickle", "rb").read())  ##
             success, frame = self.video.read()
@@ -371,10 +379,14 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
         img = cp.CaptureImage(value, image_count)
         print(img.create_dir())
         msg = img.save_img()
-        return "Image saved!"
-    elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
-        msg = 'Button 2 was most recently clicked'
-        return None
+        image_filename = 'saved_images/image_captured.png'  # replace with your own image
+        encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+        return html.Div(
+            [html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
+
+    # elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
+    #     msg = 'Button 2 was most recently clicked'
+    #     return None
         # return html.Div([html.Div(msg),])
 
     elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition
@@ -384,7 +396,11 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
     elif int(btn4) > int(btn1) and int(btn4) > int(btn2) and int(btn4) > int(btn3) and int(btn4) > int(btn5) and int(btn4) > int(btn6):
         print("[INFO] Facial recognition has been STOPPED (button4: stop video pressed)")
         cv2.destroyAllWindows()
-        return html.Div([html.Div(html.Img(src=" "),)])
+        image_filename = 'saved_images/stop_image.png'  # replace with your own image
+        encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+        return html.Div(
+            [html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
+        # return html.Div([html.Div(html.Img(src=" "),)])
 
 
     elif int(btn5) > int(btn1) and int(btn5) > int(btn3) and int(btn5) > int(btn4) and int(btn5) > int(btn6):  # btn 5 - HAAR
@@ -405,15 +421,24 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
 
 
 @app.callback(Output('loading-output-1', 'children'),
-              [Input('btn-2', 'n_clicks_timestamp')])
-def displayLoadTrain(btn2):
-    if int(btn2):  # button 2 train
+              [Input('btn-1', 'n_clicks_timestamp'),
+               Input('btn-2', 'n_clicks_timestamp'),
+               Input('btn-3', 'n_clicks_timestamp'),
+               Input('btn-4', 'n_clicks_timestamp'),
+               Input('btn-5', 'n_clicks_timestamp'),
+               Input('btn-6', 'n_clicks_timestamp')])
+def displayLoadTrain(btn1, btn2, btn3, btn4, btn5, btn6):
+    if int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4) and int(btn2) > int(btn5) and int(btn2) > int(btn6):  # button 2 train
         # print('Button 2 was most recently clicked')
         time.sleep(1)
         ef.encoding()
         train.faces_train()
         msg = 'Training has finished!'
-        return msg
+        image_filename = 'saved_images/training_image.png'  # replace with your own image
+        encoded_image = base64.b64encode(open(image_filename, 'rb').read())
+        return html.Div(
+            [html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
+        # return msg
 
 
 if __name__ == '__main__':

@@ -70,7 +70,7 @@ def haar(video):
                 file1.write("https://www.instagram.com/" + name + "/")
                 file1.close()
                 # obj.main(frame, x, h, y, conf, w, name, conf)
-                obj.main(frame, x, h, y, w, name, conf)
+                obj.main(frame, y, x, 100, 100, name, conf)
 
         # cv2.imshow('frame', frame)
         # if cv2.waitKey(20) & 0xFF == ord('q'):
