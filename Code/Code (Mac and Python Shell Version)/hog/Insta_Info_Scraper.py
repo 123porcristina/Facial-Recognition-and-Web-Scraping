@@ -10,7 +10,6 @@ import json
 import cv2
 
 
-#######SCRAPER#################
 # scraper pulls data and shows the details on the screen
 class Insta_Info_Scraper:
 
@@ -95,7 +94,7 @@ class Insta_Info_Scraper:
             self.ctx.check_hostname = False
             self.ctx.verify_mode = ssl.CERT_NONE
 
-            with open('hog/users.txt') as f:
+            with open('Code/hog/users.txt') as f:
                 self.content = f.readlines()
             self.content = [x.strip() for x in self.content]
             for url in self.content:

@@ -12,7 +12,7 @@ import cv2
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 
 from flask import Flask, Response
 import os
@@ -267,7 +267,7 @@ app.layout = html.Div(
                             html.Hr(),
                             html.Div(className="'app-controls-block'", children=[
                                 html.Label("Directory name *"),
-                                dcc.Input(id='input-box', placeholder='Instagram user...', type='text', className="control-download"),
+                                dcc.Input(id='input-box', placeholder='Instagram user...', type='text'),
                                 html.Br(),
                                 html.Br(),
                                 html.Button('Capture Picture', id='btn-1', className="control-download",
@@ -381,9 +381,10 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
         img = cp.CaptureImage(value, image_count)
         print(img.create_dir())
         msg = img.save_img()
-        return msg
-    # elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
-    #     msg = 'Button 2 was most recently clicked'
+        return False
+    elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
+        msg = 'Button 2 was most recently clicked'
+        return None
         # return html.Div([html.Div(msg),])
 
     elif int(btn3) > int(btn1) and int(btn3) > int(btn2) and int(btn3) > int(btn4) and int(btn3) > int(btn5) and int(btn3) > int(btn6):  # button 3 - Recognition

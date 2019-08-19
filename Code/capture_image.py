@@ -13,7 +13,6 @@ class CaptureImage(object):
         if os.path.exists(self.path):
             return "[INFO] Already the path exists"
         else:
-
             os.mkdir(self.path)
             return "[INFO] Directory ", self.name, " Created"
 
@@ -22,7 +21,7 @@ class CaptureImage(object):
         # print("button CAPTURE was pressed")
         video_capture = cv2.VideoCapture(0)
         print("[INFO] Taking picture...")
-        time.sleep(2)
+        time.sleep(1)
         ret, frame = video_capture.read()
         saved = self.path + str(self.image_count) + ".jpg"
         cv2.imwrite(saved, frame)
@@ -30,17 +29,20 @@ class CaptureImage(object):
         video_capture.release()
         cv2.destroyAllWindows()
         del video_capture
+        print("cerrar camara")
         return "[INFO] Image saved"
+        # time.sleep(1)
+        # return 0
 
 
-def main():
-    name = input("Please enter the name o the subfolder:")
-    img = CaptureImage(name, 1)
-    test = img.create_dir()
-    print(test)
-    print(img.save_img())
-
-
-if __name__ == "__main__": # "Executed when invoked directly"
-    main()
+# def main():
+#     name = input("Please enter the name o the subfolder:")
+#     img = CaptureImage(name, 1)
+#     test = img.create_dir()
+#     print(test)
+#     print(img.save_img())
+#
+#
+# if __name__ == "__main__": # "Executed when invoked directly"
+#     main()
 

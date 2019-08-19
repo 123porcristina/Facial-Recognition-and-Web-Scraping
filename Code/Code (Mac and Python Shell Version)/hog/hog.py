@@ -6,7 +6,8 @@ import imutils
 import pickle
 import time
 import cv2
-from hog import Insta_Info_Scraper as scraper
+from Code.hog import Insta_Info_Scraper as scraper
+# from hog import Insta_Info_Scraper as scraper
 #import Insta_Info_Scraper as scraper
 
 
@@ -26,6 +27,9 @@ ap.add_argument("-d", "--detection-method", type=str, default="hog",
                 help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
 
+"""load the known faces and embeddings"""
+print("[INFO] loading encodings...")
+data = pickle.loads(open("./hog/encodings.pickle", "rb").read())
 
 """scraper"""
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -61,15 +65,9 @@ class VideoCamera1(object):
 
 
     def get_frame(self):
-        
-
-        """load the known faces and embeddings"""
-        print("[INFO] loading encodings...")
-        data = pickle.loads(open("hog/encodings.pickle", "rb").read())
-
         success, frame = self.video.read()
         # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        
+
         #####################################################
         """convert the input frame from BGR to RGB then resize it to have
         a width of 750px (to speedup processing)"""
@@ -128,8 +126,8 @@ class VideoCamera1(object):
             # draw the predicted face name and instagram status on the images
             # if username is recognized  from the camera, save the url in a text file
             # to be pulled out later by a scraper
-            open('hog/users.txt', 'w').close()  # clear5 it first
-            file1 = open("hog/users.txt", "a")  # append mode
+            open('Code/hog/users.txt', 'w').close()  # clear5 it first
+            file1 = open("Code/hog/users.txt", "a")  # append mode
             file1.write("https://www.instagram.com/" + name + "/")
             file1.close()
             obj.main(frame, top, left, right, bottom, name)
