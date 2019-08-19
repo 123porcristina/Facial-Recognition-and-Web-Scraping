@@ -1,30 +1,25 @@
 # import the necessary packages
-from imutils.video import VideoStream
 import face_recognition
 import argparse
 import imutils
 import pickle
 import time
 import cv2
-# from Code import Insta_Info_Scraper as scraper
-# import Insta_Info_Scraper as scraper
-
+import os
+import math
+import numpy as np
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.dependencies import Input, Output, State
-
+from dash.dependencies import Input, Output
 from flask import Flask, Response
-import os
-from imutils.video import videostream
-from Prueba import Insta_Info_Scraper as scraper
-from Prueba import capture_image as cp
-from Prueba.haar import faces as haar
-from Prueba import encode_faces as ef
-from Prueba.haar import faces_train as train
+from Code.web_scraper import Insta_Info_Scraper as scraper
+from Code.capture_image import capture_image as cp
+from Code.haar import faces as haar
+from Code.hog import encode_faces as ef
+from Code.haar import faces_train as train
 
-import math
-import numpy as np
+
 
 """construct the argument parser and parse the arguments"""
 ap = argparse.ArgumentParser()
@@ -38,9 +33,6 @@ ap.add_argument("-d", "--detection-method", type=str, default="hog",
                 help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
 
-# """load the known faces and embeddings"""
-# print("[INFO] loading encodings...")
-# data = pickle.loads(open("encodings.pickle", "rb").read())
 
 """scraper"""
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -49,8 +41,6 @@ stroke = 1
 size = 0.5
 obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 
-
-# vs = VideoStream(src=0).start()
 writer = None
 
 """allows to turn of the light of the cam"""
@@ -72,7 +62,7 @@ class VideoCamera(object):
 
         if self.vd_type == 1: #HOG
             print("[INFO] loading encodings...")
-            data = pickle.loads(open("encodings.pickle", "rb").read())  ##
+            data = pickle.loads(open("./encodings.pickle", "rb").read())  ##
             success, frame = self.video.read()
             # frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
@@ -381,7 +371,7 @@ def displayClick(btn1, btn2, btn3, btn4, btn5, btn6, value):
         img = cp.CaptureImage(value, image_count)
         print(img.create_dir())
         msg = img.save_img()
-        return False
+        return "Image saved!"
     elif int(btn2) > int(btn1) and int(btn2) > int(btn3) and int(btn2) > int(btn4): #button 2 train
         msg = 'Button 2 was most recently clicked'
         return None
