@@ -385,7 +385,6 @@ def displayLoadTrain(btn1, btn2, btn3, btn4, btn5, btn6):
         encoded_image = base64.b64encode(open(image_filename, 'rb').read())
         return html.Div(
             [html.Div(html.Img(src='data:image/png;base64,{}'.format(encoded_image.decode())))])
-        # return msg
 
 
 if __name__ == '__main__':
