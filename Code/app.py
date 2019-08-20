@@ -20,8 +20,6 @@ from Code.haar import faces as haar
 from Code.hog import encode_faces as ef
 from Code.haar import faces_train as train
 
-
-
 """construct the argument parser and parse the arguments"""
 ap = argparse.ArgumentParser()
 ap.add_argument("-e", "--encodings", required=False,
@@ -33,7 +31,6 @@ ap.add_argument("-y", "--display", type=int, default=1,
 ap.add_argument("-d", "--detection-method", type=str, default="hog",
                 help="face detection model to use: either `hog` or `cnn`")
 args = vars(ap.parse_args())
-
 
 """scraper"""
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -62,12 +59,6 @@ class VideoCamera(object):
     def get_frame(self):
 
         if self.vd_type == 1: #HOG
-            # """scraper"""
-            # font = cv2.FONT_HERSHEY_SIMPLEX
-            # color = (255, 255, 255)
-            # stroke = 1
-            # size = 0.5
-            # obj = scraper.Insta_Info_Scraper(font, color, stroke, size)
 
             print("[INFO] loading encodings...")
             data = pickle.loads(open("./encodings.pickle", "rb").read())  ##
@@ -291,50 +282,6 @@ app.layout = html.Div(
                     ])
                 ),
 
-                # dcc.Tab(
-                #     label='Graph',
-                #     value='graph',
-                #     children=html.Div(className='control-tab', children=[
-                #         html.Div(className='app-controls-block', children=[
-                #             html.Div(className='app-controls-name', children='Graph type'),
-                #             dcc.Dropdown(
-                #                 id='circos-graph-type',
-                #                 options=[
-                #                     {'label': graph_type.title(),
-                #                      'value': graph_type} for graph_type in [
-                #                         'heatmap',
-                #                         'chords',
-                #                         'highlight',
-                #                         'histogram',
-                #                         'line',
-                #                         'scatter',
-                #                         'stack',
-                #                         'text',
-                #                         'parser_data'
-                #                     ]
-                #                 ],
-                #                 value='chords'
-                #             ),
-                #             html.Div(className='app-controls-desc', id='chords-text'),
-                #         ]),
-                #         html.Div(className='app-controls-block', children=[
-                #             html.Div(className='app-controls-name', children='Graph size'),
-                #             dcc.Slider(
-                #                 id='circos-size',
-                #                 min=500,
-                #                 max=800,
-                #                 step=10,
-                #                 value=650
-                #             ),
-                #         ]),
-                #         html.Hr(),
-                #         html.H5('Hover data'),
-                #         html.Div(
-                #             id='event-data-select'
-                #         ),
-                #
-                #     ]),
-                # ),
             ])
         ]),
                 # show video

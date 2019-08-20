@@ -47,28 +47,31 @@ class Insta_Info_Scraper:
             print('---------------------------')
         else:
             html = urllib.request.urlopen(url, context=self.ctx).read()
-            # print("getinfo error 2")
-            soup = BeautifulSoup(html, 'html.parser')
-            data = soup.find_all('meta', attrs={'property': 'og:description'
-                                                })
-            text = data[0].get('content').split()
-            user = '%s %s %s' % (text[-3], text[-2], text[-1])
-            followers = text[0]
-            following = text[2]
-            posts = text[4]
+            try:
+                # print("getinfo error 2")
+                soup = BeautifulSoup(html, 'html.parser')
+                data = soup.find_all('meta', attrs={'property': 'og:description'
+                                                    })
+                text = data[0].get('content').split()
+                user = '%s %s %s' % (text[-3], text[-2], text[-1])
+                followers = text[0]
+                following = text[2]
+                posts = text[4]
 
-            # add new info to the dictionary
-            info_instagram = {name: {'User': user,
-                                     'Followers': followers,
-                                     'Following': following,
-                                     'Posts': posts}}
-            self.insta_dict.update(info_instagram)
+                # add new info to the dictionary
+                info_instagram = {name: {'User': user,
+                                         'Followers': followers,
+                                         'Following': following,
+                                         'Posts': posts}}
+                self.insta_dict.update(info_instagram)
 
-            print('User:', user)
-            print('Followers:', followers)
-            print('Following:', following)
-            print('Posts:', posts)
-            print('---------------------------')
+                print('User:', user)
+                print('Followers:', followers)
+                print('Following:', following)
+                print('Posts:', posts)
+                print('---------------------------')
+            except:
+                pass
 
     # Set info about the user on the screen according to the face on it
     def setTextScreen(self, frame, x, h, y, w, name, conf):

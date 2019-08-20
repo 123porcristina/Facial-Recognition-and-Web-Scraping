@@ -1,9 +1,6 @@
 import cv2
 import pickle
 import numpy as np
-# import Insta_Info_Scraper as scraper
-# from haar import Insta_Info_Scraper as scraper
-# from Code.haar import Insta_Info_Scraper as scraper
 from Code.web_scraper import Insta_Info_Scraper as scraper
 import os
 
