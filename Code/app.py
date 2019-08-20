@@ -303,7 +303,6 @@ app.layout = html.Div(
     ]
 )
 
-
 image_count = 1
 
 
