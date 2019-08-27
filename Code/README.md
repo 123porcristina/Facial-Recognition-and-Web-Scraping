@@ -66,11 +66,11 @@ STEPS TO RUN THE MODEL
    Output:
    Running on http://127.0.0.1:8050/
    Debugger PIN: 004-066-703
-   * Serving Flask app "Main" (lazy loading)
-   * Environment: production
-   [31m   WARNING: This is a development server. Do not use it in a production deployment.[0m
-   [2m   Use a production WSGI server instead.[0m
-   * Debug mode: on
+   *Serving Flask app "Main" (lazy loading)
+   *Environment: production
+   [31m   WARNING: This is a development server. Do not use it in a production deployment.[0m
+   [2m   Use a production WSGI server instead.[0m
+   *Debug mode: on
 
 2. On the web browser:
     - About tab: Reveals the overview of the project
